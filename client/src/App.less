@@ -1,0 +1,40 @@
+@backgroundColor: rgb(247, 247, 247);
+
+.layout-container {
+  min-width: 1500px;
+  height: 1200px;
+  background-color: @backgroundColor !important;
+  padding-bottom: 3em;
+}
+
+.wrapper {
+  height: 100vh;
+  background-color: @backgroundColor;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  color: white !important;
+  margin-bottom: 0 !important;
+}
+
+.content-container {
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.toolbar-container {
+  margin: 1em 0;
+}
+
+.hint{
+  margin: 1em 0 0 1em;
+  & > span {
+    color: red;
+  }
+}
