@@ -1,4 +1,4 @@
-import { Product } from "../store/productStore";
+import { TProduct } from "../models";
 
 export const enum Endpoints {
   PRODUCTS = "http://localhost:3000/products",
@@ -8,5 +8,5 @@ export const enum Endpoints {
 }
 
 export class RequestResult {
-  constructor(public error: string | null, public result?: Array<Product> | number) {}
+  constructor(public error: string | null, public result?: Array<TProduct> | number) {}
 }

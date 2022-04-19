@@ -19,6 +19,7 @@ import SliderFilter from "./filter/SliderFilter";
 import SearchFilter from "./filter/SearchFilter";
 import CheckBoxFilter from "./filter/CheckBoxFilter";
 import { Sizes, Types } from "../models";
+import { SortKey } from "../store/sortStore";
 
 enum IconColor {
   INACTIVE = "#bfbfbf",
@@ -74,16 +75,8 @@ const Datatable = () => {
     }
   };
 
-  const sortItems = (key: string) => {
-    if (filterStore.sortState[0] !== key) {
-      filterStore.setSortState([key, "ASC"]);
-    } else {
-      if (filterStore.sortState[1] === "") {
-        filterStore.setSortState([key, "ASC"]);
-      } else if (filterStore.sortState[1] === "ASC") {
-        filterStore.setSortState([key, "DESC"]);
-      } else filterStore.setSortState([key, ""]);
-    }
+  const sortItems = (key: SortKey) => {
+    useStore().sortStore.toggleSort(key);
   };
 
   ////////////////////
@@ -260,7 +253,7 @@ const Datatable = () => {
                 <SliderFilter type="Price" />
               </Dropdown>
             </Col>
-            <Col className="sort-icon-container" onClick={() => sortItems("price")}>
+            <Col className="sort-icon-container" onClick={() => sortItems(SortKey.PRICE)}>
               <Row>
                 <CaretUpOutlined
                   style={{
@@ -312,7 +305,7 @@ const Datatable = () => {
                 <DateFilter />
               </Dropdown>
             </Col>
-            <Col className="sort-icon-container" onClick={() => sortItems("date")}>
+            <Col className="sort-icon-container" onClick={() => sortItems(SortKey.DATE_RECEIPT)}>
               <Row>
                 <CaretUpOutlined
                   style={{

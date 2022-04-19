@@ -10,7 +10,9 @@ const REMOVE_PRODUCT_BUTTON_NAME = "Remove product";
 
 const { productStore, filterStore } = useStore();
 
-const clearSortsAndFilters = () => {};
+const clearSortsAndFilters = () => {
+  filterStore.removeFilters();
+};
 
 const deleteProduct = () => {};
 

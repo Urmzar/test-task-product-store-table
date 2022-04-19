@@ -1,7 +1,11 @@
 import { types, flow, cast, Instance } from "mobx-state-tree";
 import makeRequest from "../api";
 import { Endpoints, RequestResult } from "../api/utils";
+import { TProduct } from "../models";
 import useStore from "./useStore";
+
+export type KProduct = { [key: string]: string | number | Date | ((name: string, price: number) => Promise<void>) };
+export type K1Product = { [key: string]: string | number | Date };
 
 const ProductModel = types
   .model("ProductModel", {
@@ -12,7 +16,7 @@ const ProductModel = types
     size: types.string,
     inStock: types.number,
     price: types.number,
-    dateReceipt: types.string,
+    dateReceipt: types.Date,
   })
   .actions(self => ({
     update: flow(function* (name: string, price: number) {
@@ -44,7 +48,11 @@ export const ProductStore = types
     load: flow(function* () {
       const requestResult: RequestResult = yield makeRequest(Endpoints.PRODUCTS);
       if (requestResult.result) {
-        self.products = cast(requestResult.result as Array<Product>);
+        self.products = cast(
+          (requestResult.result as Array<TProduct>).map(product => {
+            return { ...product, dateReceipt: new Date(product.dateReceipt) };
+          })
+        );
         if (self.products) {
           useStore().filterStore.setFilters(self.products);
         }
@@ -101,18 +109,9 @@ export const ProductStore = types
   }))
   .views(self => ({
     get currentProducts() {
-      const { sortState } = useStore().filterStore;
-      let filtered = self.products?.filter(product => useStore().filterStore.getFilter({ ...product }));
-      if (sortState[1] !== "") {
-        if (sortState[1] === "ASC") {
-          if (sortState[0] === "price") return filtered?.sort((a, b) => a.price - b.price);
-          else return filtered?.sort((a, b) => new Date(a.dateReceipt).valueOf() - new Date(b.dateReceipt).valueOf());
-        } else {
-          if (sortState[0] === "price") return filtered?.sort((a, b) => -a.price + b.price);
-          else return filtered?.sort((a, b) => -new Date(a.dateReceipt).valueOf() + new Date(b.dateReceipt).valueOf());
-        }
-      }
-      return filtered;
+      return self.products
+        ?.filter(product => useStore().filterStore.getFilter(product))
+        .sort((a, b) => useStore().sortStore.getSort({ ...a }, { ...b }));
     },
   }));
 

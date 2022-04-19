@@ -19,7 +19,7 @@ const DateFilter = () => {
   }, [filterStore.dateFilter[0], filterStore.dateFilter[1]]);
 
   const onSetSearch = () => {
-    filterStore.setFilter(FilterKey.DATE_RECEIPT, [filter[0].toString(), filter[1].toString()]);
+    filterStore.setFilter(FilterKey.DATE_RECEIPT, [filter[0].valueOf(), filter[1].valueOf()]);
   };
 
   const disableDate = (current: Moment) => {

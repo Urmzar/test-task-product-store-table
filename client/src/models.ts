@@ -1,3 +1,14 @@
+export type TProduct = {
+  id: number;
+  name: string;
+  type: Types;
+  color: Colors;
+  size: Sizes;
+  inStock: number;
+  price: number;
+  dateReceipt: string;
+};
+
 export enum Types {
   Outerwear = "Верхняя одежда",
   Underwear = "Белье",

@@ -29,6 +29,9 @@ export const FilterStore = types
     removeFilter(key: FilterKey) {
       self.filters.delete(key);
     },
+    removeFilters() {
+      self.filters.clear();
+    },
 
     ////// OLD
 
@@ -46,7 +49,7 @@ export const FilterStore = types
     setFilters(products: Array<Product>) {
       const inStockArray = products.map(product => product.inStock);
       const priceArray = products.map(product => product.price);
-      const timestampArray = products.map(product => Date.parse(product.dateReceipt));
+      const timestampArray = products.map(product => product.dateReceipt.valueOf());
       self.inStockMin = Math.min.apply(null, inStockArray);
       self.inStockMax = Math.max.apply(null, inStockArray);
       self.priceMin = Math.min.apply(null, priceArray);

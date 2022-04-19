@@ -1,4 +1,5 @@
 import { types } from "mobx-state-tree";
+import { KProduct } from "../productStore";
 
 export enum FilterKey {
   NAME = "name",
@@ -16,16 +17,11 @@ export const FilterModel = types
     query: types.array(types.union(types.number, types.string)),
   })
   .views(self => ({
-    getFilter(product: { [key: string]: string | number | ((name: string, price: number) => Promise<void>) }) {
-      if (self.key === FilterKey.DATE_RECEIPT)
-        return (
-          new Date(product[self.key].toString()) >= new Date(self.query[0]) &&
-          new Date(product[self.key].toString()) <= new Date(self.query[1])
-        );
-      else if (self.key === FilterKey.IN_STOCK || self.key === FilterKey.PRICE)
-        return product[self.key] >= self.query[0] && product[self.key] <= self.query[1];
+    getFilter(product: KProduct) {
+      if (self.key === FilterKey.IN_STOCK || self.key === FilterKey.PRICE || self.key === FilterKey.DATE_RECEIPT)
+        return product[self.key].valueOf() >= self.query[0] && product[self.key].valueOf() <= self.query[1];
       return self.query.some(
-        qItem => product[self.key].toString().toLowerCase().indexOf(qItem.toString().toLowerCase()) > -1
+        queryItem => product[self.key].toString().toLowerCase().indexOf(queryItem.toString().toLowerCase()) > -1
       );
     },
   }));
