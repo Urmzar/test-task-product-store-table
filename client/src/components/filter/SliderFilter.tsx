@@ -1,6 +1,7 @@
 import { Row, Col, Button, Slider, InputNumber } from "antd";
 import { observer } from "mobx-react-lite";
 import { FC, useEffect, useState } from "react";
+import { FilterKey } from "../../store/filterStore/filterModel";
 import useStore from "../../store/useStore";
 import "./Filter.less";
 
@@ -24,7 +25,7 @@ const SliderFilter: FC<FilterProps> = ({ type }) => {
   ]);
 
   const onSetFilter = () => {
-    if (type === "InStock") filterStore.setInStockFilter(filter);
+    if (type === "InStock") filterStore.setFilter(FilterKey.IN_STOCK, filter);
     else filterStore.setPriceFilter(filter);
   };
 

@@ -1,9 +1,12 @@
 import { types, cast } from "mobx-state-tree";
-import { Types, Sizes } from "../models";
-import { Product } from "./productStore";
+import { Types, Sizes } from "../../models";
+import { FilterKey, FilterModel } from "./filterModel";
+import { Product } from "../productStore";
 
 export const FilterStore = types
   .model("FilterStore", {
+    filters: types.map(FilterModel),
+
     searchQuery: types.optional(types.string, ""),
     typeFilter: types.optional(types.array(types.string), Object.values(Types)),
     colorFilter: types.optional(types.string, ""),
@@ -20,6 +23,15 @@ export const FilterStore = types
     sortState: types.optional(types.array(types.string), ["price", ""]),
   })
   .actions(self => ({
+    setFilter(key: FilterKey, query: Array<string> | [number, number]) {
+      self.filters.set(key, { key, query });
+    },
+    removeFilter(key: FilterKey) {
+      self.filters.delete(key);
+    },
+
+    ////// OLD
+
     clearSortsAndFilters() {
       self.searchQuery = "";
       self.typeFilter = cast(Object.values(Types));
@@ -80,5 +92,10 @@ export const FilterStore = types
 
     setSortState(state: [string, string]) {
       self.sortState = cast(state);
+    },
+  }))
+  .views(self => ({
+    getFilter(product: Product) {
+      return Array.from(self.filters).every(filter => filter[1].getFilter(product));
     },
   }));

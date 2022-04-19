@@ -3,6 +3,7 @@ import { Row, Col, Button, DatePicker } from "antd";
 import { observer } from "mobx-react-lite";
 import moment, { Moment } from "moment";
 import { useEffect, useState } from "react";
+import { FilterKey } from "../../store/filterStore/filterModel";
 import useStore from "../../store/useStore";
 import "./Filter.less";
 
@@ -18,7 +19,7 @@ const DateFilter = () => {
   }, [filterStore.dateFilter[0], filterStore.dateFilter[1]]);
 
   const onSetSearch = () => {
-    filterStore.setDateFilter([new Date(filter[0].toString()), new Date(filter[1].toString())]);
+    filterStore.setFilter(FilterKey.DATE_RECEIPT, [filter[0].toString(), filter[1].toString()]);
   };
 
   const disableDate = (current: Moment) => {

@@ -5,6 +5,7 @@ import { BlockPicker } from "react-color";
 import useStore from "../../store/useStore";
 import { Colors } from "../../models";
 import "./Filter.less";
+import { FilterKey } from "../../store/filterStore/filterModel";
 
 export const ColorFilter = () => {
   const { filterStore } = useStore();
@@ -26,7 +27,7 @@ export const ColorFilter = () => {
       <Row gutter={8}>
         <Col span={12}>
           <Button
-            onClick={() => filterStore.setColorFilter(filter)}
+            onClick={() => filterStore.setFilter(FilterKey.COLOR, [filter])}
             className="filter-button"
             size={"small"}
             type="primary"

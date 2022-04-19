@@ -101,18 +101,8 @@ export const ProductStore = types
   }))
   .views(self => ({
     get currentProducts() {
-      const { searchQuery, typeFilter, colorFilter, sizeFilter, inStockFilter, priceFilter, dateFilter, sortState } =
-        useStore().filterStore;
-      let filtered = self.products
-        ?.filter(product => product.name.toLowerCase().indexOf(searchQuery) > -1)
-        .filter(product => typeFilter.some(type => product.type === type))
-        .filter(product => sizeFilter.some(size => product.size === size))
-        .filter(product => product.inStock >= inStockFilter[0] && product.inStock <= inStockFilter[1])
-        .filter(product => product.price >= priceFilter[0] && product.price <= priceFilter[1])
-        .filter(
-          product => new Date(product.dateReceipt) >= dateFilter[0] && new Date(product.dateReceipt) <= dateFilter[1]
-        )
-        .filter(product => (colorFilter ? product.color === colorFilter : true));
+      const { sortState } = useStore().filterStore;
+      let filtered = self.products?.filter(product => useStore().filterStore.getFilter({ ...product }));
       if (sortState[1] !== "") {
         if (sortState[1] === "ASC") {
           if (sortState[0] === "price") return filtered?.sort((a, b) => a.price - b.price);

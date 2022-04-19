@@ -1,6 +1,7 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Row, Col, Input, Button } from "antd";
 import { useState } from "react";
+import { FilterKey } from "../../store/filterStore/filterModel";
 import useStore from "../../store/useStore";
 import "./Filter.less";
 
@@ -10,7 +11,7 @@ const SearchFilter = () => {
   const [query, setQuery] = useState("");
 
   const reset = () => {
-    filterStore.setSearchQuery("");
+    filterStore.removeFilter(FilterKey.NAME);
     setQuery("");
   };
 
@@ -22,7 +23,7 @@ const SearchFilter = () => {
       <Row className="filter-button-container" gutter={8}>
         <Col span={12}>
           <Button
-            onClick={() => filterStore.setSearchQuery(query)}
+            onClick={() => filterStore.setFilter(FilterKey.NAME, [query])}
             className="filter-button"
             size={"small"}
             type="primary"
