@@ -1,23 +1,24 @@
 @backgroundColor: rgb(247, 247, 247);
 
-.layout-container {
+.wrapper {
+  height: 100vh;
+  display: block !important;
+  background-color: @backgroundColor !important;
+}
+
+.app-container {
   min-width: 1500px;
   height: 1200px;
   background-color: @backgroundColor !important;
   padding-bottom: 3em;
 }
 
-.wrapper {
-  height: 100vh;
-  background-color: @backgroundColor;
-}
-
-.header {
+.header-container {
   display: flex;
   align-items: center;
 }
 
-.title {
+.header-title {
   color: white !important;
   margin-bottom: 0 !important;
 }
