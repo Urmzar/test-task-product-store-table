@@ -1,7 +1,7 @@
 import { Header } from "antd/lib/layout/layout";
 import Title from "antd/lib/typography/Title";
 import Styles from "../../styles";
-import "./HeaderContainer.less";
+import "./.less/HeaderContainer.less";
 
 const TABLE_NAME = "productStore table";
 
