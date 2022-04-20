@@ -1,8 +1,8 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Row, Col, Input, Button } from "antd";
 import { useState } from "react";
-import { FilterKey } from "../../store/filterStore/filterModel";
-import useStore from "../../store/useStore";
+import { FilterKey } from "../../stores/filterStore/filterModel";
+import useStore from "../../stores/useStore";
 import "./Filter.less";
 
 const { filterStore } = useStore();

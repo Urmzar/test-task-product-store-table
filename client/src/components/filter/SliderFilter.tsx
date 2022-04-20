@@ -1,28 +1,34 @@
 import { Row, Col, Button, Slider, InputNumber } from "antd";
 import { observer } from "mobx-react-lite";
 import { FC, useEffect, useState } from "react";
-import { FilterKey } from "../../store/filterStore/filterModel";
-import useStore from "../../store/useStore";
+import { FilterKey } from "../../stores/filterStore/filterModel";
+import { Range, RangeKey } from "../../stores/rangeStore/RangeModel";
+import useStore from "../../stores/useStore";
 import "./Filter.less";
 
-const { filterStore } = useStore();
+const { filterStore, rangeStore } = useStore();
 
 interface FilterProps {
   type: "InStock" | "Price";
 }
 
 const SliderFilter: FC<FilterProps> = ({ type }) => {
-  const [filter, setFilter] = useState<[number, number]>([0, 0]);
+  const [filter, setFilter] = useState<Range>([0, 0]);
 
   useEffect(() => {
-    if (type === "InStock") setFilter([filterStore.inStockFilter[0], filterStore.inStockFilter[1]]);
-    else setFilter([filterStore.priceFilter[0], filterStore.priceFilter[1]]);
-  }, [
-    filterStore.inStockFilter[0],
-    filterStore.inStockFilter[1],
-    filterStore.priceFilter[0],
-    filterStore.priceFilter[1],
-  ]);
+    setFilter(rangeStore.getRange(RangeKey.IN_STOCK));
+  }, [rangeStore.getRange(RangeKey.IN_STOCK)]);
+
+  // useEffect(() => {
+  //   if (type === "InStock")
+  //     setFilter(filterStore.getFilterByKey(FilterKey.IN_STOCK).range);
+  //   else setFilter([filterStore.priceFilter[0], filterStore.priceFilter[1]]);
+  // }, [
+  //   filterStore.inStockFilter[0],
+  //   filterStore.inStockFilter[1],
+  //   filterStore.priceFilter[0],
+  //   filterStore.priceFilter[1],
+  // ]);
 
   const onSetFilter = () => {
     if (type === "InStock") filterStore.setFilter(FilterKey.IN_STOCK, filter);
@@ -31,8 +37,8 @@ const SliderFilter: FC<FilterProps> = ({ type }) => {
 
   const reset = () => {
     if (type === "InStock") {
-      filterStore.setInStockFilter([filterStore.inStockMin, filterStore.inStockMax]);
-      setFilter([filterStore.inStockMin, filterStore.inStockMax]);
+      filterStore.removeFilter(FilterKey.IN_STOCK);
+      setFilter(rangeStore.getRange(RangeKey.IN_STOCK));
     } else {
       filterStore.setPriceFilter([filterStore.priceMin, filterStore.priceMax]);
       setFilter([filterStore.priceMin, filterStore.priceMax]);
@@ -45,8 +51,8 @@ const SliderFilter: FC<FilterProps> = ({ type }) => {
         <Col span={12}>
           <InputNumber
             className="input-filter"
-            min={type === "InStock" ? filterStore.inStockMin : filterStore.priceMin}
-            max={type === "InStock" ? filterStore.inStockMax : filterStore.priceMax}
+            min={type === "InStock" ? rangeStore.getRange(RangeKey.IN_STOCK)[0] : filterStore.priceMin}
+            max={type === "InStock" ? rangeStore.getRange(RangeKey.IN_STOCK)[1] : filterStore.priceMax}
             value={filter[0]}
             onChange={e => {
               setFilter(prev => [e, prev[1]]);
@@ -56,8 +62,8 @@ const SliderFilter: FC<FilterProps> = ({ type }) => {
         <Col span={12}>
           <InputNumber
             className="input-filter"
-            min={type === "InStock" ? filterStore.inStockMin : filterStore.priceMin}
-            max={type === "InStock" ? filterStore.inStockMax : filterStore.priceMax}
+            min={type === "InStock" ? rangeStore.getRange(RangeKey.IN_STOCK)[0] : filterStore.priceMin}
+            max={type === "InStock" ? rangeStore.getRange(RangeKey.IN_STOCK)[1] : filterStore.priceMax}
             value={filter[1]}
             onChange={e => {
               setFilter(prev => [prev[0], e]);
@@ -69,8 +75,8 @@ const SliderFilter: FC<FilterProps> = ({ type }) => {
         <Col span={24}>
           <Slider
             range
-            min={type === "InStock" ? filterStore.inStockMin : filterStore.priceMin}
-            max={type === "InStock" ? filterStore.inStockMax : filterStore.priceMax}
+            min={type === "InStock" ? rangeStore.getRange(RangeKey.IN_STOCK)[0] : filterStore.priceMin}
+            max={type === "InStock" ? rangeStore.getRange(RangeKey.IN_STOCK)[1] : filterStore.priceMax}
             value={filter}
             onChange={e => {
               setFilter([e[0], e[1]]);

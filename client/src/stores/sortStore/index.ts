@@ -1,5 +1,5 @@
 import { types } from "mobx-state-tree";
-import { K1Product, KProduct, Product } from "./productStore";
+import { KProduct } from "../productStore/productModel";
 
 export enum SortKey {
   PRICE = "price",
@@ -8,7 +8,7 @@ export enum SortKey {
 
 // order: 0 - NAT, 1 - ASC, 2 - DESC
 
-export const SortStore = types
+const SortStore = types
   .model("SortStore", {
     key: types.optional(types.enumeration<SortKey>(Object.values(SortKey)), SortKey.PRICE),
     order: types.optional(types.number, 0),
@@ -25,6 +25,9 @@ export const SortStore = types
         if (self.order > 2) self.order = 0;
       }
     },
+    removeSort() {
+      self.order = 0;
+    },
   }))
   .views(self => ({
     getSort(productA: KProduct, productB: KProduct) {
@@ -33,3 +36,5 @@ export const SortStore = types
       else return Number(productB[self.key].valueOf()) - Number(productA[self.key].valueOf());
     },
   }));
+
+export default SortStore;

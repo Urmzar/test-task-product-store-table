@@ -10,7 +10,7 @@ import {
   TableCellRenderer,
   TableHeaderRenderer,
 } from "react-virtualized";
-import useStore from "../store/useStore";
+import useStore from "../stores/useStore";
 import { ColorFilter } from "./filter/ColorFilter";
 import "./Datatable.less";
 import Dropdown from "./common/Dropdown";
@@ -18,8 +18,8 @@ import DateFilter from "./filter/DateFilter";
 import SliderFilter from "./filter/SliderFilter";
 import SearchFilter from "./filter/SearchFilter";
 import CheckBoxFilter from "./filter/CheckBoxFilter";
-import { Sizes, Types } from "../models";
-import { SortKey } from "../store/sortStore";
+import { SortKey } from "../stores/sortStore";
+import { FilterKey } from "../stores/filterStore/filterModel";
 
 enum IconColor {
   INACTIVE = "#bfbfbf",
@@ -28,7 +28,7 @@ enum IconColor {
 
 let prevClickedDiv: HTMLDivElement | null;
 
-const { productStore, filterStore } = useStore();
+const { productStore, filterStore, sortStore } = useStore();
 
 const Datatable = () => {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -47,9 +47,9 @@ const Datatable = () => {
       if (prevClickedDiv !== (info.event.currentTarget as HTMLDivElement)) {
         prevClickedDiv = info.event.currentTarget as HTMLDivElement;
         prevClickedDiv.style.backgroundColor = "#eaeaea";
-        productStore.setSelectedDeleteProduct(info.rowData);
+        productStore.setSelectedProductForDelete(info.rowData);
       } else {
-        productStore.setSelectedDeleteProduct(null);
+        productStore.setSelectedProductForDelete(null);
         prevClickedDiv.style.backgroundColor = "white";
         prevClickedDiv = null;
       }
@@ -60,7 +60,7 @@ const Datatable = () => {
     if (!isEditMode) {
       setIsEditMode(true);
       setClickedRowIndex(info.index);
-      productStore.setSelectedDeleteProduct(null);
+      productStore.setSelectedProductForDelete(null);
       if (prevClickedDiv) prevClickedDiv.style.backgroundColor = "white";
       productStore.setSelectedUpdateProduct(info.rowData);
     }
@@ -135,7 +135,7 @@ const Datatable = () => {
           <Dropdown
             element={
               <SearchOutlined
-                style={{ color: filterStore.searchQuery === "" ? IconColor.INACTIVE : IconColor.ACTIVE }}
+                style={{ color: filterStore.getFilterByKey(FilterKey.NAME) ? IconColor.ACTIVE : IconColor.INACTIVE }}
               />
             }>
             <SearchFilter />
@@ -154,8 +154,7 @@ const Datatable = () => {
             element={
               <FilterFilled
                 style={{
-                  color:
-                    filterStore.typeFilter.length === Object.keys(Types).length ? IconColor.INACTIVE : IconColor.ACTIVE,
+                  color: filterStore.getFilterByKey(FilterKey.TYPE) ? IconColor.ACTIVE : IconColor.INACTIVE,
                 }}
               />
             }>
@@ -175,8 +174,7 @@ const Datatable = () => {
             element={
               <FilterFilled
                 style={{
-                  color:
-                    filterStore.sizeFilter.length === Object.keys(Sizes).length ? IconColor.INACTIVE : IconColor.ACTIVE,
+                  color: filterStore.getFilterByKey(FilterKey.SIZE) ? IconColor.ACTIVE : IconColor.INACTIVE,
                 }}
               />
             }>
@@ -196,7 +194,7 @@ const Datatable = () => {
             element={
               <FilterFilled
                 style={{
-                  color: filterStore.colorFilter === "" ? IconColor.INACTIVE : IconColor.ACTIVE,
+                  color: filterStore.getFilterByKey(FilterKey.COLOR) ? IconColor.ACTIVE : IconColor.INACTIVE,
                 }}
               />
             }>
@@ -216,11 +214,7 @@ const Datatable = () => {
             element={
               <FilterFilled
                 style={{
-                  color:
-                    filterStore.inStockFilter[0] === filterStore.inStockMin &&
-                    filterStore.inStockFilter[1] === filterStore.inStockMax
-                      ? IconColor.INACTIVE
-                      : IconColor.ACTIVE,
+                  color: filterStore.getFilterByKey(FilterKey.IN_STOCK) ? IconColor.ACTIVE : IconColor.INACTIVE,
                 }}
               />
             }>
@@ -259,9 +253,7 @@ const Datatable = () => {
                   style={{
                     fontSize: "11px",
                     color:
-                      filterStore.sortState[0] === "price" && filterStore.sortState[1] === "DESC"
-                        ? IconColor.ACTIVE
-                        : IconColor.INACTIVE,
+                      sortStore.key === SortKey.PRICE && sortStore.order === 2 ? IconColor.ACTIVE : IconColor.INACTIVE,
                   }}
                 />
               </Row>
@@ -270,9 +262,7 @@ const Datatable = () => {
                   style={{
                     fontSize: "11px",
                     color:
-                      filterStore.sortState[0] === "price" && filterStore.sortState[1] === "ASC"
-                        ? IconColor.ACTIVE
-                        : IconColor.INACTIVE,
+                      sortStore.key === SortKey.PRICE && sortStore.order === 1 ? IconColor.ACTIVE : IconColor.INACTIVE,
                   }}
                 />
               </Row>
@@ -311,7 +301,7 @@ const Datatable = () => {
                   style={{
                     fontSize: "11px",
                     color:
-                      filterStore.sortState[0] === "date" && filterStore.sortState[1] === "DESC"
+                      sortStore.key === SortKey.DATE_RECEIPT && sortStore.order === 1
                         ? IconColor.ACTIVE
                         : IconColor.INACTIVE,
                   }}
@@ -322,7 +312,7 @@ const Datatable = () => {
                   style={{
                     fontSize: "11px",
                     color:
-                      filterStore.sortState[0] === "date" && filterStore.sortState[1] === "ASC"
+                      sortStore.key === SortKey.DATE_RECEIPT && sortStore.order === 2
                         ? IconColor.ACTIVE
                         : IconColor.INACTIVE,
                   }}

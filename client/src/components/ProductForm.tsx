@@ -1,7 +1,7 @@
-import { Button, DatePicker, Divider, Form, Input, InputNumber, Select } from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, Select } from "antd";
 import { observer } from "mobx-react-lite";
 import moment, { Moment } from "moment";
-import useStore from "../store/useStore";
+import useStore from "../stores/useStore";
 import { Colors, Sizes, Types } from "../models";
 import "./ProductForm.less";
 
@@ -33,7 +33,7 @@ const ProductForm = () => {
   const onFinish = (values: FormValues) => {
     productStore.addProduct({
       color: values.color,
-      dateReceipt: values.date.toISOString(),
+      dateReceipt: new Date(values.date.valueOf()),
       id: 0,
       inStock: values.inStock,
       price: values.price,

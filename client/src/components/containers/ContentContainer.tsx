@@ -1,19 +1,14 @@
-import { Row, Col } from "antd";
+import { Row } from "antd";
 import { Content } from "antd/lib/layout/layout";
 import Styles from "../../styles";
-import Datatable from "../Datatable";
-import Toolbar from "../presentations/Toolbar";
 import "./.less/ContentContainer.less";
+import DatatableContainer from "./DatatableContainer";
 import ToolbarContainer from "./ToolbarContainer";
 
 const ContentContainer = () => (
   <Content className={Styles.CONTENT_CONTAINER}>
     <ToolbarContainer />
-    <Row>
-      <Col>
-        <Datatable />
-      </Col>
-    </Row>
+    <DatatableContainer />
     <Row className="hint">
       <span>*</span>&nbsp;Double click on table row to edit product
     </Row>

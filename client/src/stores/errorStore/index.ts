@@ -1,6 +1,6 @@
 import { types } from "mobx-state-tree";
 
-export const ErrorStore = types
+const ErrorStore = types
   .model("ErrorStore", {
     error: types.maybeNull(types.string),
   })
@@ -9,3 +9,5 @@ export const ErrorStore = types
       self.error = error;
     },
   }));
+
+export default ErrorStore;

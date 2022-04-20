@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import useStore from "../../store/useStore";
+import useStore from "../../stores/useStore";
 import ErrorDisplay from "../presentations/ErrorDisplay";
 
 const { errorStore } = useStore();

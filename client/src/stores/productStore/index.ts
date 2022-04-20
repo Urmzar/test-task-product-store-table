@@ -1,47 +1,14 @@
 import { types, flow, cast, Instance } from "mobx-state-tree";
-import makeRequest from "../api";
-import { Endpoints, RequestResult } from "../api/utils";
-import { TProduct } from "../models";
-import useStore from "./useStore";
-
-export type KProduct = { [key: string]: string | number | Date | ((name: string, price: number) => Promise<void>) };
-export type K1Product = { [key: string]: string | number | Date };
-
-const ProductModel = types
-  .model("ProductModel", {
-    id: types.identifierNumber,
-    name: types.string,
-    type: types.string,
-    color: types.string,
-    size: types.string,
-    inStock: types.number,
-    price: types.number,
-    dateReceipt: types.Date,
-  })
-  .actions(self => ({
-    update: flow(function* (name: string, price: number) {
-      const { errorStore, filterStore } = useStore();
-      const requestResult: RequestResult = yield makeRequest(Endpoints.UPDATE_PRODUCT, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: self.id, name, price }),
-      });
-      if (requestResult.error) {
-        errorStore.setError(requestResult.error);
-      } else {
-        self.name = name;
-        self.price = price;
-        filterStore.updatePriceFilter(price);
-      }
-    }),
-  }));
+import makeRequest from "../../api";
+import { Endpoints, RequestResult } from "../../api/utils";
+import { TProduct } from "../../models";
+import { ProductModel, Product } from "./productModel";
+import useStore from "../useStore";
 
 export const ProductStore = types
   .model("ProductStore", {
     products: types.maybe(types.array(ProductModel)),
-    selectedDeleteProduct: types.maybeNull(types.reference(ProductModel)),
+    selectedProductForDelete: types.maybeNull(types.reference(ProductModel)),
     selectedUpdateProduct: types.maybeNull(types.reference(ProductModel)),
   })
   .actions(self => ({
@@ -55,6 +22,7 @@ export const ProductStore = types
         );
         if (self.products) {
           useStore().filterStore.setFilters(self.products);
+          useStore().rangeStore.updateRanges();
         }
       } else {
         useStore().errorStore.setError(requestResult.error);
@@ -62,18 +30,19 @@ export const ProductStore = types
     }),
 
     deleteProduct: flow(function* () {
-      if (self.selectedDeleteProduct) {
+      if (self.selectedProductForDelete) {
         const requestResult: RequestResult = yield makeRequest(
-          Endpoints.DELETE_PRODUCT + self.selectedDeleteProduct.id,
+          Endpoints.DELETE_PRODUCT + self.selectedProductForDelete.id,
           {
             method: "DELETE",
           }
         );
         if (requestResult.error) useStore().errorStore.setError(requestResult.error);
         else if (self.products) {
-          self.products.remove(self.selectedDeleteProduct);
+          self.products.remove(self.selectedProductForDelete);
           useStore().filterStore.setFilters(self.products);
-          self.selectedDeleteProduct = null;
+          useStore().rangeStore.updateRanges();
+          self.selectedProductForDelete = null;
         }
       }
     }),
@@ -94,8 +63,8 @@ export const ProductStore = types
       }
     }),
 
-    setSelectedDeleteProduct(product: Instance<typeof ProductModel> | null) {
-      self.selectedDeleteProduct = product;
+    setSelectedProductForDelete(product: Instance<typeof ProductModel> | null) {
+      self.selectedProductForDelete = product;
     },
 
     setSelectedUpdateProduct(product: Instance<typeof ProductModel> | null) {
@@ -114,5 +83,3 @@ export const ProductStore = types
         .sort((a, b) => useStore().sortStore.getSort({ ...a }, { ...b }));
     },
   }));
-
-export type Product = Omit<Instance<typeof ProductModel>, "update">;

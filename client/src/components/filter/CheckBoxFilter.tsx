@@ -1,10 +1,10 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Row, Col, Button, Checkbox } from "antd";
 import { FC, useState } from "react";
-import useStore from "../../store/useStore";
+import useStore from "../../stores/useStore";
 import { Sizes, Types } from "../../models";
 import "./Filter.less";
-import { FilterKey } from "../../store/filterStore/filterModel";
+import { FilterKey } from "../../stores/filterStore/filterModel";
 
 interface FilterProps {
   type: "Type" | "Size";
@@ -18,17 +18,17 @@ export const CheckBoxFilter: FC<FilterProps> = ({ type }) => {
   const onSetFilter = () => {
     if (type === "Type") {
       if (filter.length > 0) filterStore.setFilter(FilterKey.TYPE, filter);
-      else filterStore.setTypeFilter(Object.values(Types));
+      else filterStore.removeFilter(FilterKey.TYPE);
     } else {
-      if (filter.length > 0) filterStore.setSizeFilter(filter);
-      else filterStore.setSizeFilter(Object.values(Sizes));
+      if (filter.length > 0) filterStore.setFilter(FilterKey.SIZE, filter);
+      else filterStore.removeFilter(FilterKey.SIZE);
     }
   };
 
   const reset = () => {
     setFilter([]);
-    if (type === "Size") filterStore.setSizeFilter(Object.values(Sizes));
-    else filterStore.setTypeFilter(Object.values(Types));
+    if (type === "Size") filterStore.removeFilter(FilterKey.SIZE);
+    else filterStore.removeFilter(FilterKey.TYPE);
   };
 
   return (
