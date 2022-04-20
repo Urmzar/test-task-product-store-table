@@ -9,14 +9,14 @@ import "./Filter.less";
 
 const { RangePicker } = DatePicker;
 
-const { filterStore } = useStore();
+const { filterStore, rangeStore } = useStore();
 
 const DateFilter = () => {
   const [filter, setFilter] = useState([moment(), moment()]);
 
   useEffect(() => {
-    setFilter([moment(filterStore.dateFilter[0]), moment(filterStore.dateFilter[1])]);
-  }, [filterStore.dateFilter[0], filterStore.dateFilter[1]]);
+    setFilter(rangeStore.getDateRange());
+  }, [rangeStore.getDateRange()]);
 
   const onSetSearch = () => {
     filterStore.setFilter(FilterKey.DATE_RECEIPT, [filter[0].valueOf(), filter[1].valueOf()]);
@@ -27,7 +27,7 @@ const DateFilter = () => {
   };
 
   const reset = () => {
-    filterStore.setDateFilter([filterStore.dateMin, filterStore.dateMax]);
+    filterStore.removeFilter(FilterKey.DATE_RECEIPT);
     setFilter([moment(filterStore.dateMin), moment(filterStore.dateMax)]);
   };
 

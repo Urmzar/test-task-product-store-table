@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
-import useStore from "../../stores/useStore";
-import Styles from "../../styles";
-import Toolbar from "../presentations/Toolbar";
+import useStore from "../../../stores/useStore";
+import Styles from "../../../styles";
+import Toolbar from "../../presentations/Toolbar";
 import "./.less/ToolbarContainer.less";
 
 const CLEAR_SORTS_AND_FILTERS_BUTTON_NAME = "Clear sorts and filters";

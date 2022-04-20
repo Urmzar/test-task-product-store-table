@@ -1,4 +1,4 @@
-import { flow } from "mobx";
+import { flow } from "mobx-state-tree";
 import { Instance, types } from "mobx-state-tree";
 import makeRequest from "../../api";
 import { RequestResult, Endpoints } from "../../api/utils";
@@ -20,7 +20,7 @@ export const ProductModel = types
   })
   .actions(self => ({
     update: flow(function* (name: string, price: number) {
-      const { errorStore, filterStore } = useStore();
+      const { errorStore } = useStore();
       const requestResult: RequestResult = yield makeRequest(Endpoints.UPDATE_PRODUCT, {
         method: "PUT",
         headers: {
@@ -33,7 +33,6 @@ export const ProductModel = types
       } else {
         self.name = name;
         self.price = price;
-        filterStore.updatePriceFilter(price);
       }
     }),
   }));

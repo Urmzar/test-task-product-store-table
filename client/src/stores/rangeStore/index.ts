@@ -1,6 +1,7 @@
 import { types } from "mobx-state-tree";
+import moment from "moment";
 import useStore from "../useStore";
-import RangeModel, { Range, RangeKey } from "./RangeModel";
+import RangeModel, { DateRange, Range, RangeKey } from "./RangeModel";
 
 const RangeStore = types
   .model("RangeStore", {
@@ -19,13 +20,16 @@ const RangeStore = types
           });
         }
       }
-      console.log(Array.from(self.ranges));
     },
   }))
   .views(self => ({
     getRange(key: RangeKey): Range {
       const range = self.ranges.get(key)?.range;
       return range ? range : [0, 0];
+    },
+    getDateRange(): DateRange {
+      const range = self.ranges.get(RangeKey.DATE_RECEIPT)?.dateRange;
+      return range ? range : [moment(), moment()];
     },
   }));
 

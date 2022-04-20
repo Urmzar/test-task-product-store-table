@@ -21,7 +21,6 @@ export const ProductStore = types
           })
         );
         if (self.products) {
-          useStore().filterStore.setFilters(self.products);
           useStore().rangeStore.updateRanges();
         }
       } else {
@@ -40,7 +39,6 @@ export const ProductStore = types
         if (requestResult.error) useStore().errorStore.setError(requestResult.error);
         else if (self.products) {
           self.products.remove(self.selectedProductForDelete);
-          useStore().filterStore.setFilters(self.products);
           useStore().rangeStore.updateRanges();
           self.selectedProductForDelete = null;
         }
@@ -59,7 +57,6 @@ export const ProductStore = types
       else if (self.products) {
         product.id = requestResult.result as number;
         self.products.unshift(product);
-        useStore().filterStore.setFilters(self.products);
       }
     }),
 

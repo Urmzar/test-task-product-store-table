@@ -19,20 +19,9 @@ const SliderFilter: FC<FilterProps> = ({ type }) => {
     setFilter(rangeStore.getRange(RangeKey.IN_STOCK));
   }, [rangeStore.getRange(RangeKey.IN_STOCK)]);
 
-  // useEffect(() => {
-  //   if (type === "InStock")
-  //     setFilter(filterStore.getFilterByKey(FilterKey.IN_STOCK).range);
-  //   else setFilter([filterStore.priceFilter[0], filterStore.priceFilter[1]]);
-  // }, [
-  //   filterStore.inStockFilter[0],
-  //   filterStore.inStockFilter[1],
-  //   filterStore.priceFilter[0],
-  //   filterStore.priceFilter[1],
-  // ]);
-
   const onSetFilter = () => {
     if (type === "InStock") filterStore.setFilter(FilterKey.IN_STOCK, filter);
-    else filterStore.setPriceFilter(filter);
+    else filterStore.setFilter(FilterKey.PRICE, filter);
   };
 
   const reset = () => {
@@ -40,7 +29,7 @@ const SliderFilter: FC<FilterProps> = ({ type }) => {
       filterStore.removeFilter(FilterKey.IN_STOCK);
       setFilter(rangeStore.getRange(RangeKey.IN_STOCK));
     } else {
-      filterStore.setPriceFilter([filterStore.priceMin, filterStore.priceMax]);
+      filterStore.removeFilter(FilterKey.PRICE);
       setFilter([filterStore.priceMin, filterStore.priceMax]);
     }
   };

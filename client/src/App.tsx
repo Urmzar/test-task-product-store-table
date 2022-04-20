@@ -1,9 +1,9 @@
 import "./App.less";
 import { Layout } from "antd";
 import Styles from "./styles";
-import HeaderContainer from "./components/containers/HeaderContainer";
-import ErrorContainer from "./components/containers/ErrorContainer";
-import ContentContainer from "./components/containers/ContentContainer";
+import HeaderContainer from "./components/containers/App/HeaderContainer";
+import ContentContainer from "./components/containers/App/ContentContainer";
+import ErrorContainer from "./components/containers/App/ErrorContainer";
 
 const App = () => {
   return (

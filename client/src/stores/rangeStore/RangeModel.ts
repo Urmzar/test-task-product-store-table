@@ -1,4 +1,5 @@
 import { types } from "mobx-state-tree";
+import moment, { Moment } from "moment";
 
 export enum RangeKey {
   IN_STOCK = "inStock",
@@ -7,6 +8,7 @@ export enum RangeKey {
 }
 
 export type Range = [number, number];
+export type DateRange = [Moment, Moment];
 
 const RangeModel = types
   .model("RangeModel", {
@@ -17,6 +19,9 @@ const RangeModel = types
   .views(self => ({
     get range(): Range {
       return [self.min, self.max];
+    },
+    get dateRange(): DateRange {
+      return [moment(self.min), moment(self.max)];
     },
   }));
 

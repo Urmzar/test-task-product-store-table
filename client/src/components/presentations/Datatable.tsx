@@ -1,7 +1,7 @@
 import { CaretDownOutlined, CaretUpOutlined, FilterFilled, SearchOutlined } from "@ant-design/icons";
 import { Row, Col, Space, Input, Button, InputNumber, InputRef } from "antd";
 import { observer } from "mobx-react-lite";
-import { useRef, useState } from "react";
+import { FC, useRef } from "react";
 import {
   AutoSizer,
   Column,
@@ -10,16 +10,19 @@ import {
   TableCellRenderer,
   TableHeaderRenderer,
 } from "react-virtualized";
-import useStore from "../stores/useStore";
-import { ColorFilter } from "./filter/ColorFilter";
+import useStore from "../../stores/useStore";
+import { ColorFilter } from "../filter/ColorFilter";
 import "./Datatable.less";
-import Dropdown from "./common/Dropdown";
-import DateFilter from "./filter/DateFilter";
-import SliderFilter from "./filter/SliderFilter";
-import SearchFilter from "./filter/SearchFilter";
-import CheckBoxFilter from "./filter/CheckBoxFilter";
-import { SortKey } from "../stores/sortStore";
-import { FilterKey } from "../stores/filterStore/filterModel";
+import Dropdown from "../common/Dropdown";
+import DateFilter from "../filter/DateFilter";
+import SliderFilter from "../filter/SliderFilter";
+import SearchFilter from "../filter/SearchFilter";
+import CheckBoxFilter from "../filter/CheckBoxFilter";
+import { SortKey } from "../../stores/sortStore";
+import { FilterKey } from "../../stores/filterStore/filterModel";
+import NameCellContainer from "../containers/Datatable/NameCellContainer";
+
+const { productStore, filterStore, sortStore, flagStore, datatableStore } = useStore();
 
 enum IconColor {
   INACTIVE = "#bfbfbf",
@@ -28,52 +31,14 @@ enum IconColor {
 
 let prevClickedDiv: HTMLDivElement | null;
 
-const { productStore, filterStore, sortStore } = useStore();
+interface DatatableProps {
+  rowClick: (info: RowMouseEventHandlerParams) => void;
+  rowDoubleClick: (info: RowMouseEventHandlerParams) => void;
+  rowClickedIndex?: number;
+}
 
-const Datatable = () => {
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [rowClickedIndex, setClickedRowIndex] = useState<number | null>();
-  const nameProductInput = useRef<InputRef>(null);
-  const priceProductInput = useRef<HTMLInputElement>(null);
+const Datatable: FC<DatatableProps> = ({ rowClick, rowDoubleClick, rowClickedIndex }) => {
   if (prevClickedDiv) prevClickedDiv.style.backgroundColor = "white";
-
-  ////////////////////
-  // Event handlers //
-  ////////////////////
-
-  let rowClick = (info: RowMouseEventHandlerParams) => {
-    if (!isEditMode) {
-      if (prevClickedDiv) prevClickedDiv.style.backgroundColor = "white";
-      if (prevClickedDiv !== (info.event.currentTarget as HTMLDivElement)) {
-        prevClickedDiv = info.event.currentTarget as HTMLDivElement;
-        prevClickedDiv.style.backgroundColor = "#eaeaea";
-        productStore.setSelectedProductForDelete(info.rowData);
-      } else {
-        productStore.setSelectedProductForDelete(null);
-        prevClickedDiv.style.backgroundColor = "white";
-        prevClickedDiv = null;
-      }
-    }
-  };
-
-  const rowDoubleClick = (info: RowMouseEventHandlerParams) => {
-    if (!isEditMode) {
-      setIsEditMode(true);
-      setClickedRowIndex(info.index);
-      productStore.setSelectedProductForDelete(null);
-      if (prevClickedDiv) prevClickedDiv.style.backgroundColor = "white";
-      productStore.setSelectedUpdateProduct(info.rowData);
-    }
-  };
-
-  const updateProduct = () => {
-    const newProductName = nameProductInput.current?.input?.value;
-    const newProductPrice = priceProductInput.current?.value;
-    if (newProductName && newProductPrice && newProductName !== "" && newProductPrice !== "") {
-      productStore.selectedUpdateProduct?.update(newProductName, Number(newProductPrice));
-      setIsEditMode(false);
-    }
-  };
 
   const sortItems = (key: SortKey) => {
     useStore().sortStore.toggleSort(key);
@@ -83,25 +48,9 @@ const Datatable = () => {
   // Cell renderers //
   ////////////////////
 
-  const nameCellRenderer: TableCellRenderer = ({ cellData, rowIndex }) => {
-    if (rowClickedIndex !== undefined && isEditMode && rowIndex === rowClickedIndex) {
-      return (
-        <Space>
-          <Input ref={nameProductInput} defaultValue={cellData} placeholder="Enter product name" />
-          <Button onClick={updateProduct} type="primary">
-            Edit product
-          </Button>
-          <Button
-            onClick={() => {
-              setIsEditMode(false);
-            }}>
-            Cancel
-          </Button>
-        </Space>
-      );
-    }
-    return cellData;
-  };
+  const nameCellRenderer: TableCellRenderer = ({ cellData, rowIndex }) => (
+    <NameCellContainer cellData={cellData} rowIndex={rowIndex} rowClickedIndex={rowClickedIndex} />
+  );
 
   const colorCellRenderer: TableCellRenderer = ({ cellData }) => {
     return (
@@ -114,8 +63,8 @@ const Datatable = () => {
   };
 
   const priceCellRenderer: TableCellRenderer = ({ cellData, rowIndex }) => {
-    if (rowClickedIndex && isEditMode && rowIndex === rowClickedIndex)
-      return <InputNumber ref={priceProductInput} min={0} defaultValue={cellData} />;
+    if (rowClickedIndex && flagStore.isEditMode && rowIndex === rowClickedIndex)
+      return <InputNumber min={0} defaultValue={cellData} onChange={e => datatableStore.setNewProductPrice(e)} />;
     return Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB" }).format(cellData);
   };
 
@@ -236,11 +185,7 @@ const Datatable = () => {
                 element={
                   <FilterFilled
                     style={{
-                      color:
-                        filterStore.priceFilter[0] === filterStore.priceMin &&
-                        filterStore.priceFilter[1] === filterStore.priceMax
-                          ? IconColor.INACTIVE
-                          : IconColor.ACTIVE,
+                      color: filterStore.getFilterByKey(FilterKey.PRICE) ? IconColor.ACTIVE : IconColor.INACTIVE,
                     }}
                   />
                 }>
@@ -284,11 +229,7 @@ const Datatable = () => {
                 element={
                   <FilterFilled
                     style={{
-                      color:
-                        filterStore.dateFilter[0] === filterStore.dateMin &&
-                        filterStore.dateFilter[1] === filterStore.dateMax
-                          ? IconColor.INACTIVE
-                          : IconColor.ACTIVE,
+                      color: filterStore.getFilterByKey(FilterKey.DATE_RECEIPT) ? IconColor.ACTIVE : IconColor.INACTIVE,
                     }}
                   />
                 }>
