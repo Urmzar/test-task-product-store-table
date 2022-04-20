@@ -8,6 +8,7 @@ enum Styles {
   HINT_CONTAINER = "hint-container",
   ROW_CONTAINER = "ReactVirtualized__Table__row",
   ROW_CONTAINER_ACTIVE = "ReactVirtualized__Table__row active",
+  COLOR_CELL_CONTAINER = "color-cell-container",
 }
 
 export default Styles;

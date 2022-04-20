@@ -38,7 +38,14 @@ const DatatableContainer = () => {
     }
   };
 
-  return <Datatable rowClick={rowClick} rowDoubleClick={rowDoubleClick} rowClickedIndex={rowClickedIndex} />;
+  return (
+    <Datatable
+      isEditMode={flagStore.isEditMode}
+      rowClick={rowClick}
+      rowDoubleClick={rowDoubleClick}
+      rowClickedIndex={rowClickedIndex}
+    />
+  );
 };
 
 export default observer(DatatableContainer);

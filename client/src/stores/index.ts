@@ -1,7 +1,7 @@
 import { types } from "mobx-state-tree";
 import FilterStore from "./filterStore";
 import ErrorStore from "./errorStore";
-import { ProductStore } from "./productStore";
+import ProductStore from "./productStore";
 import SortStore from "./sortStore";
 import RangeStore from "./rangeStore";
 import FlagStore from "./flagStore";

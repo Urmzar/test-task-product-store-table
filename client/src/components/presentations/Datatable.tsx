@@ -1,7 +1,7 @@
 import { CaretDownOutlined, CaretUpOutlined, FilterFilled, SearchOutlined } from "@ant-design/icons";
-import { Row, Col, Space, Input, Button, InputNumber, InputRef } from "antd";
+import { Row, Col, Space } from "antd";
 import { observer } from "mobx-react-lite";
-import { FC, useRef } from "react";
+import { FC } from "react";
 import {
   AutoSizer,
   Column,
@@ -21,8 +21,11 @@ import CheckBoxFilter from "../filter/CheckBoxFilter";
 import { SortKey } from "../../stores/sortStore";
 import { FilterKey } from "../../stores/filterStore/filterModel";
 import NameCellContainer from "../containers/Datatable/NameCellContainer";
+import ColorCellContainer from "../containers/Datatable/ColorCellContainer";
+import PriceCellContainer from "../containers/Datatable/PriceCellContainer";
+import NameHeaderContainer from "../containers/Datatable/NameHeaderContainer";
 
-const { productStore, filterStore, sortStore, flagStore, datatableStore } = useStore();
+const { productStore, filterStore, sortStore, datatableStore } = useStore();
 
 enum IconColor {
   INACTIVE = "#bfbfbf",
@@ -32,67 +35,40 @@ enum IconColor {
 let prevClickedDiv: HTMLDivElement | null;
 
 interface DatatableProps {
+  isEditMode: boolean;
   rowClick: (info: RowMouseEventHandlerParams) => void;
   rowDoubleClick: (info: RowMouseEventHandlerParams) => void;
   rowClickedIndex?: number;
 }
 
-const Datatable: FC<DatatableProps> = ({ rowClick, rowDoubleClick, rowClickedIndex }) => {
+const Datatable: FC<DatatableProps> = ({ isEditMode, rowClick, rowDoubleClick, rowClickedIndex }) => {
   if (prevClickedDiv) prevClickedDiv.style.backgroundColor = "white";
 
   const sortItems = (key: SortKey) => {
     useStore().sortStore.toggleSort(key);
   };
 
-  ////////////////////
-  // Cell renderers //
-  ////////////////////
+  // Cell renderers
 
   const nameCellRenderer: TableCellRenderer = ({ cellData, rowIndex }) => (
     <NameCellContainer cellData={cellData} rowIndex={rowIndex} rowClickedIndex={rowClickedIndex} />
   );
 
-  const colorCellRenderer: TableCellRenderer = ({ cellData }) => {
-    return (
-      <div
-        className="color-cell-container"
-        style={{
-          backgroundColor: `${cellData}`,
-        }}></div>
-    );
-  };
+  const colorCellRenderer: TableCellRenderer = ({ cellData }) => <ColorCellContainer cellData={cellData} />;
 
-  const priceCellRenderer: TableCellRenderer = ({ cellData, rowIndex }) => {
-    if (rowClickedIndex && flagStore.isEditMode && rowIndex === rowClickedIndex)
-      return <InputNumber min={0} defaultValue={cellData} onChange={e => datatableStore.setNewProductPrice(e)} />;
-    return Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB" }).format(cellData);
-  };
+  const priceCellRenderer: TableCellRenderer = ({ cellData, rowIndex }) => (
+    <PriceCellContainer cellData={cellData} rowClickedIndex={rowClickedIndex} rowIndex={rowIndex} />
+  );
 
   const dateCellRenderer: TableCellRenderer = ({ cellData }) => {
-    return Intl.DateTimeFormat("ru-RU").format(new Date(cellData));
+    return Intl.DateTimeFormat("ru-RU").format(cellData);
   };
 
   //////////////////////
   // Header renderers //
   //////////////////////
 
-  const nameHeaderRenderer: TableHeaderRenderer = ({ label }) => {
-    return (
-      <Row justify="space-between" align="middle">
-        <Col>{label}</Col>
-        <Col>
-          <Dropdown
-            element={
-              <SearchOutlined
-                style={{ color: filterStore.getFilterByKey(FilterKey.NAME) ? IconColor.ACTIVE : IconColor.INACTIVE }}
-              />
-            }>
-            <SearchFilter />
-          </Dropdown>
-        </Col>
-      </Row>
-    );
-  };
+  const nameHeaderRenderer: TableHeaderRenderer = ({ label }) => <NameHeaderContainer label={label} />;
 
   const typeHeaderRenderer: TableHeaderRenderer = ({ label }) => {
     return (

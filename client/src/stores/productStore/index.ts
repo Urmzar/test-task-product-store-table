@@ -5,7 +5,7 @@ import { TProduct } from "../../models";
 import { ProductModel, Product } from "./productModel";
 import useStore from "../useStore";
 
-export const ProductStore = types
+const ProductStore = types
   .model("ProductStore", {
     products: types.maybe(types.array(ProductModel)),
     selectedProductForDelete: types.maybeNull(types.reference(ProductModel)),
@@ -80,3 +80,5 @@ export const ProductStore = types
         .sort((a, b) => useStore().sortStore.getSort({ ...a }, { ...b }));
     },
   }));
+
+export default ProductStore;
