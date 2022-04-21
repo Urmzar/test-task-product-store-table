@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { RowMouseEventHandlerParams, TableCellRenderer } from "react-virtualized";
 import useStore from "../../../../stores/useStore";
 import Styles from "../../../../styles";
@@ -51,20 +51,34 @@ const DatatableContainer = () => {
 
   if (prevClickedDiv) prevClickedDiv.className = Styles.ROW_CONTAINER;
 
-  const rowDoubleClick = (info: RowMouseEventHandlerParams) => {
+  const rowDoubleClick = useCallback((info: RowMouseEventHandlerParams) => {
     if (!flagStore.isEditMode) {
       flagStore.setEditMode(true);
       setRowClickedIndex(info.index);
       productStore.setSelectedProduct(info.rowData);
     }
-  };
+  }, []);
 
-  const nameCellRenderer: TableCellRenderer = ({ cellData, rowIndex }) => (
-    <NameCellContainer cellData={cellData} rowIndex={rowIndex} rowClickedIndex={rowClickedIndex} />
+  const nameCellRenderer: TableCellRenderer = useCallback(
+    ({ cellData, rowIndex }) => (
+      <NameCellContainer
+        cellData={cellData}
+        rowIndex={rowIndex}
+        rowClickedIndex={rowClickedIndex}
+      />
+    ),
+    [rowClickedIndex]
   );
 
-  const priceCellRenderer: TableCellRenderer = ({ cellData, rowIndex }) => (
-    <PriceCellContainer cellData={cellData} rowIndex={rowIndex} rowClickedIndex={rowClickedIndex} />
+  const priceCellRenderer: TableCellRenderer = useCallback(
+    ({ cellData, rowIndex }) => (
+      <PriceCellContainer
+        cellData={cellData}
+        rowIndex={rowIndex}
+        rowClickedIndex={rowClickedIndex}
+      />
+    ),
+    [rowClickedIndex]
   );
 
   return (

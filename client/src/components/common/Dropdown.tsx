@@ -1,6 +1,6 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Row } from "antd";
-import React, { FC, useRef } from "react";
+import React, { FC, useCallback, useRef } from "react";
 import ReactDOM from "react-dom";
 import { createDropdownContentContextDiv, setPosition } from "./DropdownUtils";
 import "./.less/Dropdown.less";
@@ -24,15 +24,6 @@ const Dropdown: FC<Props> = ({ element, children }) => {
       setPosition(dropdownContentContainerDiv.current, elementContainerDiv.current);
   };
 
-  const onIconClose = () => {
-    if (dropdownContentContainerDiv.current) {
-      dropdownContentContainerDiv.current.style.display = "none";
-      isActive = false;
-      window.removeEventListener("resize", resize);
-      document.removeEventListener("click", onMouseClose);
-    }
-  };
-
   const onMouseClose = (e: MouseEvent) => {
     // Make it work with Ant Design Date components
     const antPickerWrapper = document.querySelector(
@@ -51,7 +42,16 @@ const Dropdown: FC<Props> = ({ element, children }) => {
       onIconClose();
   };
 
-  const toggle = (e: React.MouseEvent<Element, MouseEvent>) => {
+  const onIconClose = useCallback(() => {
+    if (dropdownContentContainerDiv.current) {
+      dropdownContentContainerDiv.current.style.display = "none";
+      isActive = false;
+      window.removeEventListener("resize", resize);
+      document.removeEventListener("click", onMouseClose);
+    }
+  }, []);
+
+  const toggle = useCallback((e: React.MouseEvent<Element, MouseEvent>) => {
     if (!isActive && dropdownContentContainerDiv.current && elementContainerDiv.current) {
       e.stopPropagation();
       dropdownContentContainerDiv.current.style.display = "block";
@@ -60,7 +60,7 @@ const Dropdown: FC<Props> = ({ element, children }) => {
       document.addEventListener("click", onMouseClose);
       isActive = true;
     }
-  };
+  }, []);
 
   return (
     <>

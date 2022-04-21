@@ -2,7 +2,7 @@ import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import { Row } from "antd";
 import { FC } from "react";
 import Styles from "../../styles";
-import { IconColor } from "../containers/Content/DatatableContainer";
+import { IconColor } from "../containers/Content/DatatableContainer/HeaderRenderers";
 import "./.less/SortButton.less";
 
 interface Props {

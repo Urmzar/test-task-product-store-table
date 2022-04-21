@@ -23,25 +23,23 @@ interface Props {
   sortKey?: SortKey;
 }
 
-const TableHeaderContainer: FC<Props> = ({ label, icon, children, sortKey }) => {
-  return (
-    <TableHeader
-      label={label}
-      icon={icon}
-      sortButton={
-        sortKey ? (
-          <SortButton
-            onClick={() => {
-              sortItems(sortKey);
-            }}
-            upColor={getIconColor(sortKey, 2)}
-            downColor={getIconColor(sortKey, 1)}
-          />
-        ) : undefined
-      }>
-      {children}
-    </TableHeader>
-  );
-};
+const TableHeaderContainer: FC<Props> = ({ label, icon, children, sortKey }) => (
+  <TableHeader
+    label={label}
+    icon={icon}
+    sortButton={
+      sortKey ? (
+        <SortButton
+          onClick={() => {
+            sortItems(sortKey);
+          }}
+          upColor={getIconColor(sortKey, 2)}
+          downColor={getIconColor(sortKey, 1)}
+        />
+      ) : undefined
+    }>
+    {children}
+  </TableHeader>
+);
 
 export default observer(TableHeaderContainer);

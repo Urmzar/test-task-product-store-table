@@ -1,6 +1,6 @@
 import { Row, Col, InputNumber, Slider } from "antd";
 import { observer } from "mobx-react-lite";
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { FilterKey } from "../../../stores/filterStore/filterModel";
 import { Range, RangeKey } from "../../../stores/rangeStore/RangeModel";
 import useStore from "../../../stores/useStore";
@@ -21,25 +21,25 @@ const SliderFilterContainer: FC<Props> = ({ rangeKey, filterKey }) => {
     setFilter(rangeStore.getRange(rangeKey));
   }, [rangeStore.getRange(rangeKey)]);
 
-  const setSliderFilter = () => {
+  const setSliderFilter = useCallback(() => {
     if (
       filter[0] + filter[1] !==
       rangeStore.getRange(rangeKey)[0] + rangeStore.getRange(rangeKey)[1]
     )
       filterStore.setFilter(filterKey, filter);
     else filterStore.removeFilter(filterKey);
-  };
+  }, [filter]);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     filterStore.removeFilter(filterKey);
     setFilter(rangeStore.getRange(rangeKey));
-  };
+  }, []);
 
-  const onChangeLeft = (e: number) => setFilter(prev => [e, prev[1]]);
+  const onChangeLeft = useCallback((e: number) => setFilter(prev => [e, prev[1]]), []);
 
-  const onChangeRight = (e: number) => setFilter(prev => [prev[0], e]);
+  const onChangeRight = useCallback((e: number) => setFilter(prev => [prev[0], e]), []);
 
-  const onChangeSlider = (e: Range) => setFilter([e[0], e[1]]);
+  const onChangeSlider = useCallback((e: Range) => setFilter([e[0], e[1]]), []);
 
   return (
     <Filter className={Styles.SLIDER_FILTER_CONTAINER} onClick={setSliderFilter} reset={reset}>
@@ -48,7 +48,7 @@ const SliderFilterContainer: FC<Props> = ({ rangeKey, filterKey }) => {
           <InputNumber
             className={Styles.FILTER_INPUT}
             min={rangeStore.getRange(rangeKey)[0]}
-            max={rangeStore.getRange(rangeKey)[1]}
+            max={filter[1]}
             value={filter[0]}
             onChange={onChangeLeft}
           />
@@ -56,7 +56,7 @@ const SliderFilterContainer: FC<Props> = ({ rangeKey, filterKey }) => {
         <Col span={12}>
           <InputNumber
             className={Styles.FILTER_INPUT}
-            min={rangeStore.getRange(rangeKey)[0]}
+            min={filter[0]}
             max={rangeStore.getRange(rangeKey)[1]}
             value={filter[1]}
             onChange={onChangeRight}

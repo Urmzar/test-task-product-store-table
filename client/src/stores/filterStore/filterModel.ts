@@ -19,13 +19,22 @@ const FilterModel = types
   })
   .views(self => ({
     getFilterCondition(product: KProduct) {
-      if (typeof self.query[0] === "number")
+      if (
+        self.key === FilterKey.DATE_RECEIPT ||
+        self.key === FilterKey.IN_STOCK ||
+        self.key === FilterKey.PRICE
+      )
         return (
           product[self.key].valueOf() >= self.query[0] &&
           product[self.key].valueOf() <= self.query[1]
         );
       else if (self.key === FilterKey.NAME) {
-        return product[self.key].toString().toLowerCase().indexOf(self.query[0].toLowerCase()) > -1;
+        return (
+          product[self.key]
+            .toString()
+            .toLowerCase()
+            .indexOf(self.query[0].toString().toLowerCase()) > -1
+        );
       }
       return self.query.some(
         q => product[self.key].toString().toLowerCase().indexOf(q.toString().toLowerCase()) === 0

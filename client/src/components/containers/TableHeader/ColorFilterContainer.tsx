@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { BlockPicker, ColorResult } from "react-color";
 import { Colors } from "../../../models";
 import { FilterKey } from "../../../stores/filterStore/filterModel";
@@ -13,9 +13,12 @@ const reset = () => filterStore.removeFilter(FilterKey.COLOR);
 const ColorFilterContainer = () => {
   const [filter, setFilter] = useState<string>(Colors.ORANGE);
 
-  const onChange = (e: ColorResult) => setFilter(e.hex);
+  const setColorFilter = useCallback(
+    () => filterStore.setFilter(FilterKey.COLOR, [filter]),
+    [filter]
+  );
 
-  const setColorFilter = () => filterStore.setFilter(FilterKey.COLOR, [filter]);
+  const onChange = useCallback((e: ColorResult) => setFilter(e.hex), []);
 
   return (
     <Filter className={Styles.COLOR_FILTER_CONTAINER} onClick={setColorFilter} reset={reset}>
