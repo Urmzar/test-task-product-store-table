@@ -1,31 +1,31 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Row, Col, Input, Button } from "antd";
-import { ChangeEventHandler, FC } from "react";
+import { Row, Col, Button } from "antd";
+import { FC, ReactNode } from "react";
 import Styles from "../../../styles";
 import "./.less/Filter.less";
 
 interface Props {
-  value: string;
-  onChange: ChangeEventHandler<HTMLInputElement>;
-  setSearchFilter: () => void;
+  children: ReactNode;
+  className: Styles;
+  onClick: () => void;
   reset: () => void;
 }
 
-const SearchFilter: FC<Props> = ({ value, onChange, setSearchFilter, reset }) => {
+export const Filter: FC<Props> = ({ children, className, onClick, reset }) => {
   return (
-    <div className={Styles.SEARCH_FILTER_CONTAINER}>
+    <div className={className}>
       <Row>
-        <Input placeholder="Search product" value={value} onChange={onChange} />
+        <Col span={24}>{children}</Col>
       </Row>
       <Row className={Styles.FILTER_BUTTON_CONTAINER} gutter={8}>
         <Col span={12}>
           <Button
-            onClick={setSearchFilter}
+            onClick={onClick}
             className={Styles.FILTER_BUTTON}
             size={"small"}
             type="primary"
             icon={<SearchOutlined />}>
-            Search
+            OK
           </Button>
         </Col>
         <Col span={12}>
@@ -38,4 +38,4 @@ const SearchFilter: FC<Props> = ({ value, onChange, setSearchFilter, reset }) =>
   );
 };
 
-export default SearchFilter;
+export default Filter;

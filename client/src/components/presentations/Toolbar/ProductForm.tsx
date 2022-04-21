@@ -9,11 +9,11 @@ const { Option } = Select;
 
 interface Props {
   initialValues: FormValues;
-  onFinish: (values: FormValues) => void;
   types: Array<string>;
   colors: Array<string>;
   sizes: Array<string>;
   disabledDate: (current: Moment) => boolean;
+  onFinish: (values: FormValues) => void;
 }
 
 const ProductForm: FC<Props> = ({

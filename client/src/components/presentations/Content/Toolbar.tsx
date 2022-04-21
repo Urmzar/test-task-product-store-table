@@ -4,13 +4,13 @@ import { FC } from "react";
 import Dropdown from "../../common/Dropdown";
 import ProductFormContainer from "../../containers/Toolbar/ProductFormContainer";
 
-interface ToolbarProps {
+interface Props {
   removeProductButtonDisabled: boolean;
   clearSortsAndFilters: () => void;
   deleteProduct: () => void;
 }
 
-const Toolbar: FC<ToolbarProps> = ({
+const Toolbar: FC<Props> = ({
   removeProductButtonDisabled,
   clearSortsAndFilters,
   deleteProduct,

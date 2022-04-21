@@ -1,9 +1,11 @@
+import { Row, Col, InputNumber, Slider } from "antd";
 import { observer } from "mobx-react-lite";
 import { FC, useEffect, useState } from "react";
 import { FilterKey } from "../../../stores/filterStore/filterModel";
 import { Range, RangeKey } from "../../../stores/rangeStore/RangeModel";
 import useStore from "../../../stores/useStore";
-import SliderFilter from "../../presentations/TableHeader/SliderFilter";
+import Styles from "../../../styles";
+import Filter from "../../presentations/TableHeader/Filter";
 
 const { filterStore, rangeStore } = useStore();
 
@@ -35,16 +37,39 @@ const SliderFilterContainer: FC<Props> = ({ rangeKey, filterKey }) => {
   const onChangeSlider = (e: Range) => setFilter([e[0], e[1]]);
 
   return (
-    <SliderFilter
-      min={rangeStore.getRange(rangeKey)[0]}
-      max={rangeStore.getRange(rangeKey)[1]}
-      value={filter}
-      setSliderFilter={setSliderFilter}
-      reset={reset}
-      onChangeLeft={onChangeLeft}
-      onChangeRight={onChangeRight}
-      onChangeSlider={onChangeSlider}
-    />
+    <Filter className={Styles.SLIDER_FILTER_CONTAINER} onClick={setSliderFilter} reset={reset}>
+      <Row gutter={8}>
+        <Col span={12}>
+          <InputNumber
+            className={Styles.FILTER_INPUT}
+            min={rangeStore.getRange(rangeKey)[0]}
+            max={rangeStore.getRange(rangeKey)[1]}
+            value={filter[0]}
+            onChange={onChangeLeft}
+          />
+        </Col>
+        <Col span={12}>
+          <InputNumber
+            className={Styles.FILTER_INPUT}
+            min={rangeStore.getRange(rangeKey)[0]}
+            max={rangeStore.getRange(rangeKey)[1]}
+            value={filter[1]}
+            onChange={onChangeRight}
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <Slider
+            range
+            min={rangeStore.getRange(rangeKey)[0]}
+            max={rangeStore.getRange(rangeKey)[1]}
+            value={filter}
+            onChange={onChangeSlider}
+          />
+        </Col>
+      </Row>
+    </Filter>
   );
 };
 

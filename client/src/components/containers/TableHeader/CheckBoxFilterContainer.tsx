@@ -1,7 +1,9 @@
+import { Checkbox } from "antd";
 import { FC, useState } from "react";
 import { FilterKey } from "../../../stores/filterStore/filterModel";
 import useStore from "../../../stores/useStore";
-import CheckBoxFilter from "../../presentations/TableHeader/CheckBoxFilter";
+import Styles from "../../../styles";
+import Filter from "../../presentations/TableHeader/Filter";
 
 const { filterStore } = useStore();
 
@@ -33,13 +35,15 @@ const CheckBoxFilterContainer: FC<Props> = ({ filterKey, values }) => {
   };
 
   return (
-    <CheckBoxFilter
-      values={values}
-      checked={checked}
-      onChange={onChange}
-      reset={reset}
-      setCheckBoxFilter={setCheckBoxFilter}
-    />
+    <Filter className={Styles.CHECK_BOX_FILTER_CONTAINER} reset={reset} onClick={setCheckBoxFilter}>
+      {values.map(value => (
+        <div key={value}>
+          <Checkbox checked={checked(value)} onChange={() => onChange(value)}>
+            {value}
+          </Checkbox>
+        </div>
+      ))}
+    </Filter>
   );
 };
 

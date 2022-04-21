@@ -1,4 +1,5 @@
 import { Content } from "antd/lib/layout/layout";
+import { observer } from "mobx-react-lite";
 import useStore from "../../../stores/useStore";
 import Styles from "../../../styles";
 import DatatableContainer from "../Content/DatatableContainer";
@@ -17,4 +18,4 @@ const ContentContainer = () =>
     </Content>
   );
 
-export default ContentContainer;
+export default observer(ContentContainer);

@@ -24,7 +24,7 @@ const initialValues: FormValues = {
   size: Sizes.L,
   inStock: 10,
   price: 100,
-  date: moment(),
+  date: rangeStore.dateRange[0],
 };
 
 const onFinish = (values: FormValues) => {
@@ -40,7 +40,7 @@ const onFinish = (values: FormValues) => {
   });
 };
 
-const disabledDate = (current: Moment) => current < moment(rangeStore.dateRange[0]);
+const disabledDate = (current: Moment) => current < moment();
 
 const ProductFormContainer = () => (
   <ProductForm

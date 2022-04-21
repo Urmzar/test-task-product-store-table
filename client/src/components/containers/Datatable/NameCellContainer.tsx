@@ -5,18 +5,18 @@ import NameCell from "../../presentations/Datatable/NameCell";
 
 const { flagStore, datatableStore, productStore } = useStore();
 
-const INPUT_PLACEHOLDER = "Enter product name";
-const EDIT_BUTTON_NAME = "Edit product";
-const CANCEL_BUTTON_NAME = "Cancel";
-
 const updateProduct = () => {
   if (datatableStore.newProductName !== "") {
-    productStore.selectedUpdateProduct?.update(datatableStore.newProductName, datatableStore.newProductPrice);
+    productStore.selectedProduct?.update(
+      datatableStore.newProductName,
+      datatableStore.newProductPrice
+    );
     flagStore.setEditMode(false);
   }
 };
 
-const setNewProductName = (e: ChangeEvent<HTMLInputElement>) => datatableStore.setNewProductName(e.target.value);
+const setNewProductName = (e: ChangeEvent<HTMLInputElement>) =>
+  datatableStore.setNewProductName(e.target.value);
 
 const cancel = () => flagStore.setEditMode(false);
 
@@ -34,9 +34,6 @@ const NameCellContainer: FC<NameCellContainerProps> = ({ cellData, rowIndex, row
   return flagStore.isEditMode && rowIndex === rowClickedIndex ? (
     <NameCell
       value={datatableStore.newProductName}
-      placeholder={INPUT_PLACEHOLDER}
-      editButtonName={EDIT_BUTTON_NAME}
-      cancelButtonName={CANCEL_BUTTON_NAME}
       setNewProductName={setNewProductName}
       updateProduct={updateProduct}
       cancel={cancel}

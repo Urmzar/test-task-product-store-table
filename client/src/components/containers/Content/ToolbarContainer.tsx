@@ -4,7 +4,7 @@ import Styles from "../../../styles";
 import Toolbar from "../../presentations/Content/Toolbar";
 import "./.less/ToolbarContainer.less";
 
-const { productStore, filterStore, sortStore } = useStore();
+const { productStore, filterStore, sortStore, flagStore } = useStore();
 
 const clearSortsAndFilters = () => {
   filterStore.removeFilters();
@@ -16,7 +16,9 @@ const deleteProduct = () => productStore.deleteProduct();
 const ToolbarContainer = () => (
   <div className={Styles.TOOLBAR_CONTAINER}>
     <Toolbar
-      removeProductButtonDisabled={productStore.selectedProductForDelete ? false : true}
+      removeProductButtonDisabled={
+        productStore.selectedProduct && !flagStore.isEditMode ? false : true
+      }
       clearSortsAndFilters={clearSortsAndFilters}
       deleteProduct={deleteProduct}
     />

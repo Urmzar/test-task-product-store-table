@@ -1,4 +1,3 @@
-import { FilterFilled, SearchOutlined } from "@ant-design/icons";
 import { FC } from "react";
 import {
   AutoSizer,
@@ -8,140 +7,43 @@ import {
   TableCellRenderer,
   TableHeaderRenderer,
 } from "react-virtualized";
-import { FilterKey } from "../../../stores/filterStore/filterModel";
-import { SortKey } from "../../../stores/sortStore";
-import ColorCellContainer from "../../containers/Datatable/ColorCellContainer";
-import NameCellContainer from "../../containers/Datatable/NameCellContainer";
-import TableHeaderContainer from "../../containers/Datatable/TableHeaderContainer";
-import PriceCellContainer from "../../containers/Datatable/PriceCellContainer";
-import "./.less/Datatable.less";
-import { IconColor } from "../../containers/Content/DatatableContainer";
-import SearchFilterContainer from "../../containers/TableHeader/SearchFilterContainer";
-import CheckBoxFilterContainer from "../../containers/TableHeader/CheckBoxFilterContainer";
-import ColorFilterContainer from "../../containers/TableHeader/ColorFilterContainer";
-import SliderFilterContainer from "../../containers/TableHeader/SliderFilterContainer";
-import { RangeKey } from "../../../stores/rangeStore/RangeModel";
-import DateFilterContainer from "../../containers/Datatable/DateFilterContainer";
 import Styles from "../../../styles";
 import { Product } from "../../../stores/productStore/productModel";
-
-let prevClickedDiv: HTMLDivElement | null;
+import "./.less/Datatable.less";
 
 interface Props {
   rowClick: (info: RowMouseEventHandlerParams) => void;
   rowDoubleClick: (info: RowMouseEventHandlerParams) => void;
-  rowClickedIndex?: number;
-  searchIconColor: IconColor;
-  typeFilterIconColor: IconColor;
-  colorFilterIconColor: IconColor;
-  sizeFilterIconColor: IconColor;
-  inStockFilterIconColor: IconColor;
-  priceFilterIconColor: IconColor;
-  dateFilterIconColor: IconColor;
-  typeFilterValues: Array<string>;
-  sizeFilterValues: Array<string>;
+  nameCellRenderer: TableCellRenderer;
+  colorCellRenderer: TableCellRenderer;
+  priceCellRenderer: TableCellRenderer;
+  dateCellRenderer: TableCellRenderer;
+  nameHeaderRenderer: TableHeaderRenderer;
+  typeHeaderRenderer: TableHeaderRenderer;
+  colorHeaderRenderer: TableHeaderRenderer;
+  sizeHeaderRenderer: TableHeaderRenderer;
+  inStockHeaderRenderer: TableHeaderRenderer;
+  priceHeaderRenderer: TableHeaderRenderer;
+  dateHeaderRenderer: TableHeaderRenderer;
   products?: Array<Product>;
 }
 
 const Datatable: FC<Props> = ({
   rowClick,
   rowDoubleClick,
-  rowClickedIndex,
-  searchIconColor,
-  typeFilterIconColor,
-  colorFilterIconColor,
-  sizeFilterIconColor,
-  inStockFilterIconColor,
-  priceFilterIconColor,
-  dateFilterIconColor,
-  typeFilterValues,
-  sizeFilterValues,
+  nameCellRenderer,
+  colorCellRenderer,
+  priceCellRenderer,
+  dateCellRenderer,
+  nameHeaderRenderer,
+  typeHeaderRenderer,
+  colorHeaderRenderer,
+  sizeHeaderRenderer,
+  inStockHeaderRenderer,
+  priceHeaderRenderer,
+  dateHeaderRenderer,
   products,
 }) => {
-  if (prevClickedDiv) prevClickedDiv.style.backgroundColor = "white";
-
-  // Cell renderers
-
-  const nameCellRenderer: TableCellRenderer = ({ cellData, rowIndex }) => (
-    <NameCellContainer cellData={cellData} rowIndex={rowIndex} rowClickedIndex={rowClickedIndex} />
-  );
-
-  const colorCellRenderer: TableCellRenderer = ({ cellData }) => (
-    <ColorCellContainer cellData={cellData} />
-  );
-
-  const priceCellRenderer: TableCellRenderer = ({ cellData, rowIndex }) => (
-    <PriceCellContainer cellData={cellData} rowClickedIndex={rowClickedIndex} rowIndex={rowIndex} />
-  );
-
-  const dateCellRenderer: TableCellRenderer = ({ cellData }) => {
-    return Intl.DateTimeFormat("ru-RU").format(cellData);
-  };
-
-  // Header renderers
-
-  console.log(searchIconColor);
-
-  const nameHeaderRenderer: TableHeaderRenderer = ({ label }) => (
-    <TableHeaderContainer
-      label={label}
-      icon={<SearchOutlined style={{ color: searchIconColor }} />}>
-      <SearchFilterContainer />
-    </TableHeaderContainer>
-  );
-
-  const typeHeaderRenderer: TableHeaderRenderer = ({ label }) => (
-    <TableHeaderContainer
-      label={label}
-      icon={<FilterFilled style={{ color: typeFilterIconColor }} />}>
-      <CheckBoxFilterContainer filterKey={FilterKey.TYPE} values={typeFilterValues} />
-    </TableHeaderContainer>
-  );
-
-  const colorHeaderRenderer: TableHeaderRenderer = ({ label }) => (
-    <TableHeaderContainer
-      label={label}
-      icon={<FilterFilled style={{ color: colorFilterIconColor }} />}>
-      <ColorFilterContainer />
-    </TableHeaderContainer>
-  );
-
-  const sizeHeaderRenderer: TableHeaderRenderer = ({ label }) => (
-    <TableHeaderContainer
-      label={label}
-      icon={<FilterFilled style={{ color: sizeFilterIconColor }} />}>
-      <CheckBoxFilterContainer filterKey={FilterKey.SIZE} values={sizeFilterValues} />
-    </TableHeaderContainer>
-  );
-
-  const inStockHeaderRenderer: TableHeaderRenderer = ({ label }) => (
-    <TableHeaderContainer
-      label={label}
-      icon={<FilterFilled style={{ color: inStockFilterIconColor }} />}>
-      <SliderFilterContainer filterKey={FilterKey.IN_STOCK} rangeKey={RangeKey.IN_STOCK} />
-    </TableHeaderContainer>
-  );
-
-  const priceHeaderRenderer: TableHeaderRenderer = ({ label }) => (
-    <TableHeaderContainer
-      sortKey={SortKey.PRICE}
-      label={label}
-      icon={<FilterFilled style={{ color: priceFilterIconColor }} />}>
-      <SliderFilterContainer filterKey={FilterKey.PRICE} rangeKey={RangeKey.PRICE} />
-    </TableHeaderContainer>
-  );
-
-  const dateHeaderRenderer: TableHeaderRenderer = ({ label }) => (
-    <TableHeaderContainer
-      sortKey={SortKey.DATE_RECEIPT}
-      label={label}
-      icon={<FilterFilled style={{ color: dateFilterIconColor }} />}>
-      <DateFilterContainer />
-    </TableHeaderContainer>
-  );
-
-  // Datatable component
-
   return (
     <div className={Styles.DATATABLE_CONTAINER}>
       <AutoSizer products={products}>

@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { ColorResult } from "react-color";
+import { BlockPicker, ColorResult } from "react-color";
 import { Colors } from "../../../models";
 import { FilterKey } from "../../../stores/filterStore/filterModel";
 import useStore from "../../../stores/useStore";
-import { ColorFilter } from "../../presentations/TableHeader/ColorFilter";
+import Styles from "../../../styles";
+import Filter from "../../presentations/TableHeader/Filter";
 
 const { filterStore } = useStore();
 
@@ -17,13 +18,15 @@ const ColorFilterContainer = () => {
   const setColorFilter = () => filterStore.setFilter(FilterKey.COLOR, [filter]);
 
   return (
-    <ColorFilter
-      values={Object.values(Colors)}
-      value={filter}
-      onChange={onChange}
-      setColorFilter={setColorFilter}
-      reset={reset}
-    />
+    <Filter className={Styles.COLOR_FILTER_CONTAINER} onClick={setColorFilter} reset={reset}>
+      <BlockPicker
+        colors={Object.values(Colors)}
+        triangle="hide"
+        width="100%"
+        color={filter}
+        onChange={onChange}
+      />
+    </Filter>
   );
 };
 

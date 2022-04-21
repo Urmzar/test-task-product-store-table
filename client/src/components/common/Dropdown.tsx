@@ -4,17 +4,18 @@ import React, { FC, useRef } from "react";
 import ReactDOM from "react-dom";
 import { createDropdownContentContextDiv, setPosition } from "./DropdownUtils";
 import "./.less/Dropdown.less";
+import Styles from "../../styles";
 
 export const dropdownContentContextDiv = createDropdownContentContextDiv();
 
-interface DropdownProps {
+let isActive = false;
+
+interface Props {
   element: JSX.Element;
   children: JSX.Element;
 }
 
-let someComponentIsActive = false;
-
-const Dropdown: FC<DropdownProps> = ({ element, children }) => {
+const Dropdown: FC<Props> = ({ element, children }) => {
   const elementContainerDiv = useRef<HTMLDivElement>(null);
   const dropdownContentContainerDiv = useRef<HTMLDivElement>(null);
 
@@ -24,21 +25,21 @@ const Dropdown: FC<DropdownProps> = ({ element, children }) => {
   };
 
   const onIconClose = () => {
-    window.removeEventListener("resize", resize);
-    document.removeEventListener("click", onMouseClose);
-    someComponentIsActive = false;
-    dropdownContentContainerDiv.current!.style.display = "none";
+    if (dropdownContentContainerDiv.current) {
+      dropdownContentContainerDiv.current.style.display = "none";
+      isActive = false;
+      window.removeEventListener("resize", resize);
+      document.removeEventListener("click", onMouseClose);
+    }
   };
 
   const onMouseClose = (e: MouseEvent) => {
-    // Make it work with Ant Design components
-    const antPickerWrapper1 = document.getElementsByClassName("ant-picker-dropdown")[0];
-    const antPickerWrapperContainTarget1 =
-      antPickerWrapper1 && antPickerWrapper1.contains(e.target as Node);
-    const antPickerWrapper2 = document.getElementsByClassName("ant-picker-dropdown")[1];
-    const antPickerWrapperContainTarget2 =
-      antPickerWrapper2 && antPickerWrapper2.contains(e.target as Node);
-
+    // Make it work with Ant Design Date components
+    const antPickerWrapper = document.querySelector(
+      ".ant-picker-dropdown:not(.ant-picker-dropdown-hidden)"
+    );
+    const antPickerWrapperContainTarget =
+      antPickerWrapper && antPickerWrapper.contains(e.target as Node);
     const boundingContentrect = dropdownContentContainerDiv.current?.getBoundingClientRect();
     const outOfArea =
       boundingContentrect &&
@@ -46,39 +47,31 @@ const Dropdown: FC<DropdownProps> = ({ element, children }) => {
         e.y < boundingContentrect.y ||
         e.x > boundingContentrect.right ||
         e.y > boundingContentrect.bottom);
-    if (outOfArea && !antPickerWrapperContainTarget1 && !antPickerWrapperContainTarget2) {
-      window.removeEventListener("resize", resize);
-      document.removeEventListener("click", onMouseClose);
-      someComponentIsActive = false;
-      dropdownContentContainerDiv.current!.style.display = "none";
-    }
+    if (outOfArea && !antPickerWrapperContainTarget && dropdownContentContainerDiv.current)
+      onIconClose();
   };
 
-  const onToggle = (e: React.MouseEvent<Element, MouseEvent>) => {
-    if (
-      !someComponentIsActive &&
-      dropdownContentContainerDiv.current &&
-      elementContainerDiv.current
-    ) {
+  const toggle = (e: React.MouseEvent<Element, MouseEvent>) => {
+    if (!isActive && dropdownContentContainerDiv.current && elementContainerDiv.current) {
       e.stopPropagation();
       dropdownContentContainerDiv.current.style.display = "block";
       setPosition(dropdownContentContainerDiv.current, elementContainerDiv.current);
       window.addEventListener("resize", resize);
       document.addEventListener("click", onMouseClose);
-      someComponentIsActive = true;
+      isActive = true;
     }
   };
 
   return (
     <>
-      <div className="element-container" ref={elementContainerDiv} onClick={onToggle}>
+      <div className={Styles.DROPDOWN_ELEMENT_CONTAINER} ref={elementContainerDiv} onClick={toggle}>
         {element}
       </div>
       {ReactDOM.createPortal(
-        <div className="dropdown-content-container" ref={dropdownContentContainerDiv}>
+        <div className={Styles.DROPDOWN_CONTENT_CONTAINER} ref={dropdownContentContainerDiv}>
           {
-            <div className="dropdown-children-container">
-              <Row className="dropdown-close-icon-container" justify="end">
+            <div className={Styles.DROPDOWN_CHILDREN_CONTAINER}>
+              <Row className={Styles.DROPDOWN_CLOSE_ICON_CONTAINER} justify="end">
                 <CloseOutlined onClick={onIconClose} />
               </Row>
               <Row>{children}</Row>

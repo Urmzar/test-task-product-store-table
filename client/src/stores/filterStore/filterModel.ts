@@ -19,10 +19,15 @@ const FilterModel = types
     query: types.array(types.union(types.number, types.string)),
   })
   .views(self => ({
-    getFilter(product: KProduct) {
+    getFilterCondition(product: KProduct) {
       if (typeof self.query[0] === "number")
-        return product[self.key].valueOf() >= self.query[0] && product[self.key].valueOf() <= self.query[1];
-      return self.query.some(q => product[self.key].toString().toLowerCase().indexOf(q.toString().toLowerCase()) > -1);
+        return (
+          product[self.key].valueOf() >= self.query[0] &&
+          product[self.key].valueOf() <= self.query[1]
+        );
+      return self.query.some(
+        q => product[self.key].toString().toLowerCase().indexOf(q.toString().toLowerCase()) > -1
+      );
     },
     get range(): Range {
       if (typeof self.query[0] === "number") return [Number(self.query[0]), Number(self.query[0])];

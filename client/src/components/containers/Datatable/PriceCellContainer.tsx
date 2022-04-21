@@ -11,7 +11,7 @@ interface Props {
 
 const { datatableStore, flagStore } = useStore();
 
-const setNewProductPrice = (e: number) => datatableStore.setNewProductPrice(e);
+const setNewProductPrice = (e: number | null) => datatableStore.setNewProductPrice(e ? e : 0);
 
 const PriceCellContainer: FC<Props> = ({ rowIndex, rowClickedIndex, cellData }) => {
   useEffect(() => {

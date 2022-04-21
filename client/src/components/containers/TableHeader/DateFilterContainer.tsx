@@ -2,9 +2,13 @@ import moment, { Moment } from "moment";
 import { useEffect, useState } from "react";
 import { FilterKey } from "../../../stores/filterStore/filterModel";
 import useStore from "../../../stores/useStore";
-import DateFilter from "../../presentations/TableHeader/DateFilter";
 import RangeValue from "rc-picker/lib/interface";
 import { observer } from "mobx-react-lite";
+import Filter from "../../presentations/TableHeader/Filter";
+import { DatePicker } from "antd";
+import Styles from "../../../styles";
+
+const { RangePicker } = DatePicker;
 
 const { filterStore, rangeStore } = useStore();
 
@@ -24,21 +28,16 @@ const DateFilterContainer = () => {
     setFilter([moment(rangeStore.dateRange[0]), moment(rangeStore.dateRange[1])]);
   };
 
-  const disableDate = (current: Moment) => {
+  const disabledDate = (current: Moment) => {
     return current < moment(rangeStore.dateRange[0]) && current > moment(rangeStore.dateRange[1]);
   };
 
   const onChange = (e: RangeValue.RangeValue<Moment>) =>
     e?.[0] && e?.[1] && setFilter([e[0], e[1]]);
-
   return (
-    <DateFilter
-      value={filter}
-      disabledDate={disableDate}
-      onChange={onChange}
-      setDateFilter={setDateFilter}
-      reset={reset}
-    />
+    <Filter className={Styles.DATE_FILTER_CONTAINER} onClick={setDateFilter} reset={reset}>
+      <RangePicker value={filter} disabledDate={disabledDate} onChange={onChange} />
+    </Filter>
   );
 };
 

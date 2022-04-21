@@ -8,8 +8,7 @@ import useStore from "../useStore";
 const ProductStore = types
   .model("ProductStore", {
     products: types.maybe(types.array(ProductModel)),
-    selectedProductForDelete: types.maybeNull(types.reference(ProductModel)),
-    selectedUpdateProduct: types.maybeNull(types.reference(ProductModel)),
+    selectedProduct: types.maybeNull(types.reference(ProductModel)),
   })
   .actions(self => ({
     load: flow(function* () {
@@ -29,18 +28,18 @@ const ProductStore = types
     }),
 
     deleteProduct: flow(function* () {
-      if (self.selectedProductForDelete) {
+      if (self.selectedProduct) {
         const requestResult: RequestResult = yield makeRequest(
-          Endpoints.DELETE_PRODUCT + self.selectedProductForDelete.id,
+          Endpoints.DELETE_PRODUCT + self.selectedProduct.id,
           {
             method: "DELETE",
           }
         );
         if (requestResult.error) useStore().errorStore.setError(requestResult.error);
         else if (self.products) {
-          self.products.remove(self.selectedProductForDelete);
+          self.products.remove(self.selectedProduct);
           useStore().rangeStore.updateRanges();
-          self.selectedProductForDelete = null;
+          self.selectedProduct = null;
         }
       }
     }),
@@ -57,15 +56,12 @@ const ProductStore = types
       else if (self.products) {
         product.id = requestResult.result as number;
         self.products.unshift(product);
+        useStore().rangeStore.updateRanges();
       }
     }),
 
-    setSelectedProductForDelete(product: Instance<typeof ProductModel> | null) {
-      self.selectedProductForDelete = product;
-    },
-
-    setSelectedUpdateProduct(product: Instance<typeof ProductModel> | null) {
-      self.selectedUpdateProduct = product;
+    setSelectedProduct(product: Instance<typeof ProductModel> | null) {
+      self.selectedProduct = product;
     },
 
     afterCreate() {
@@ -76,7 +72,7 @@ const ProductStore = types
   .views(self => ({
     get currentProducts() {
       return self.products
-        ?.filter(product => useStore().filterStore.getFilter(product))
+        ?.filter(product => useStore().filterStore.getFilterConditions(product))
         .sort((a, b) => useStore().sortStore.getSort({ ...a }, { ...b }));
     },
   }));

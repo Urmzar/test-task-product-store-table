@@ -16,7 +16,6 @@ const SortButton: FC<Props> = ({ onClick, upColor, downColor }) => (
     <Row>
       <CaretUpOutlined
         style={{
-          fontSize: "11px",
           color: upColor,
         }}
       />
@@ -24,7 +23,6 @@ const SortButton: FC<Props> = ({ onClick, upColor, downColor }) => (
     <Row>
       <CaretDownOutlined
         style={{
-          fontSize: "11px",
           color: downColor,
         }}
       />

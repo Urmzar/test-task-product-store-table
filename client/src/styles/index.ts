@@ -20,6 +20,11 @@ enum Styles {
   SORT_ICON_CONTAINER = "sort-icon-container",
   DATE_FILTER_CONTAINER = "date-filter-container",
   DATATABLE_CONTAINER = "datatable-container",
+  DROPDOWN_CONTENT_CONTEXT = "dropdown-content-context",
+  DROPDOWN_ELEMENT_CONTAINER = "dropdown-element-container",
+  DROPDOWN_CONTENT_CONTAINER = "dropdown-content-container",
+  DROPDOWN_CHILDREN_CONTAINER = "dropdown-children-container",
+  DROPDOWN_CLOSE_ICON_CONTAINER = "dropdown-close-icon-container",
 }
 
 export default Styles;
