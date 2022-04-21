@@ -7,6 +7,7 @@ import { observer } from "mobx-react-lite";
 import Filter from "../../presentations/TableHeader/Filter";
 import { DatePicker } from "antd";
 import Styles from "../../../styles";
+import { RangeKey } from "../../../stores/rangeStore/RangeModel";
 
 const { RangePicker } = DatePicker;
 
@@ -20,7 +21,13 @@ const DateFilterContainer = () => {
   }, [rangeStore.dateRange]);
 
   const setDateFilter = () => {
-    filterStore.setFilter(FilterKey.DATE_RECEIPT, [filter[0].valueOf(), filter[1].valueOf()]);
+    if (
+      filter[0].valueOf() + filter[1].valueOf() !==
+      rangeStore.getRange(RangeKey.DATE_RECEIPT)[0].valueOf() +
+        rangeStore.getRange(RangeKey.DATE_RECEIPT)[1].valueOf()
+    )
+      filterStore.setFilter(FilterKey.DATE_RECEIPT, [filter[0].valueOf(), filter[1].valueOf()]);
+    else filterStore.removeFilter(FilterKey.DATE_RECEIPT);
   };
 
   const reset = () => {

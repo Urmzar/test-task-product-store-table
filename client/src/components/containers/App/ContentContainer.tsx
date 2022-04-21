@@ -12,9 +12,11 @@ const { errorStore } = useStore();
 const ContentContainer = () =>
   errorStore.error ? null : (
     <Content className={Styles.CONTENT_CONTAINER}>
-      <ToolbarContainer />
-      <DatatableContainer />
-      <HintContainer />
+      <div>
+        <ToolbarContainer />
+        <DatatableContainer />
+        <HintContainer />
+      </div>
     </Content>
   );
 

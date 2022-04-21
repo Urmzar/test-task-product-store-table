@@ -49,6 +49,8 @@ const dateCellRenderer: TableCellRenderer = ({ cellData }) => {
 const DatatableContainer = () => {
   const [rowClickedIndex, setRowClickedIndex] = useState<number>();
 
+  if (prevClickedDiv) prevClickedDiv.className = Styles.ROW_CONTAINER;
+
   const rowDoubleClick = (info: RowMouseEventHandlerParams) => {
     if (!flagStore.isEditMode) {
       flagStore.setEditMode(true);

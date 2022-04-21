@@ -1,6 +1,5 @@
 import { types } from "mobx-state-tree";
 import { KProduct } from "../productStore/productModel";
-
 import { Range } from "../../stores/rangeStore/RangeModel";
 
 export enum FilterKey {
@@ -25,8 +24,11 @@ const FilterModel = types
           product[self.key].valueOf() >= self.query[0] &&
           product[self.key].valueOf() <= self.query[1]
         );
+      else if (self.key === FilterKey.NAME) {
+        return product[self.key].toString().toLowerCase().indexOf(self.query[0].toLowerCase()) > -1;
+      }
       return self.query.some(
-        q => product[self.key].toString().toLowerCase().indexOf(q.toString().toLowerCase()) > -1
+        q => product[self.key].toString().toLowerCase().indexOf(q.toString().toLowerCase()) === 0
       );
     },
     get range(): Range {

@@ -22,7 +22,12 @@ const SliderFilterContainer: FC<Props> = ({ rangeKey, filterKey }) => {
   }, [rangeStore.getRange(rangeKey)]);
 
   const setSliderFilter = () => {
-    filterStore.setFilter(filterKey, filter);
+    if (
+      filter[0] + filter[1] !==
+      rangeStore.getRange(rangeKey)[0] + rangeStore.getRange(rangeKey)[1]
+    )
+      filterStore.setFilter(filterKey, filter);
+    else filterStore.removeFilter(filterKey);
   };
 
   const reset = () => {
