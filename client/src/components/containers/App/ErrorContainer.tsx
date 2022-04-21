@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import useStore from "../../../stores/useStore";
-import ErrorDisplay from "../../presentations/ErrorDisplay";
+import Error from "../../presentations/App/Error";
 
 const { errorStore } = useStore();
 
@@ -11,7 +11,7 @@ const continueButtonOnClick = () => errorStore.setError(null);
 
 const ErrorContainer = () =>
   errorStore.error ? (
-    <ErrorDisplay
+    <Error
       error={errorStore.error}
       reloadButtonName={RELOAD_BUTTON_NAME}
       continueButtonName={CONTINUE_BUTTON_NAME}

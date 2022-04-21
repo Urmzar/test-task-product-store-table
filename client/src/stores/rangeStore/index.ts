@@ -27,7 +27,7 @@ const RangeStore = types
       const range = self.ranges.get(key)?.range;
       return range ? range : [0, 0];
     },
-    getDateRange(): DateRange {
+    get dateRange(): DateRange {
       const range = self.ranges.get(RangeKey.DATE_RECEIPT)?.dateRange;
       return range ? range : [moment(), moment()];
     },

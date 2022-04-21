@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { ChangeEvent, FC, useEffect } from "react";
 import useStore from "../../../stores/useStore";
-import NameCell from "../../presentations/NameCell";
+import NameCell from "../../presentations/Datatable/NameCell";
 
 const { flagStore, datatableStore, productStore } = useStore();
 

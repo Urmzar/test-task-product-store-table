@@ -1,10 +1,9 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Row } from "antd";
-import { observer } from "mobx-react-lite";
 import React, { FC, useRef } from "react";
 import ReactDOM from "react-dom";
 import { createDropdownContentContextDiv, setPosition } from "./DropdownUtils";
-import "./Dropdown.less";
+import "./.less/Dropdown.less";
 
 export const dropdownContentContextDiv = createDropdownContentContextDiv();
 
@@ -34,9 +33,11 @@ const Dropdown: FC<DropdownProps> = ({ element, children }) => {
   const onMouseClose = (e: MouseEvent) => {
     // Make it work with Ant Design components
     const antPickerWrapper1 = document.getElementsByClassName("ant-picker-dropdown")[0];
-    const antPickerWrapperContainTarget1 = antPickerWrapper1 && antPickerWrapper1.contains(e.target as Node);
+    const antPickerWrapperContainTarget1 =
+      antPickerWrapper1 && antPickerWrapper1.contains(e.target as Node);
     const antPickerWrapper2 = document.getElementsByClassName("ant-picker-dropdown")[1];
-    const antPickerWrapperContainTarget2 = antPickerWrapper2 && antPickerWrapper2.contains(e.target as Node);
+    const antPickerWrapperContainTarget2 =
+      antPickerWrapper2 && antPickerWrapper2.contains(e.target as Node);
 
     const boundingContentrect = dropdownContentContainerDiv.current?.getBoundingClientRect();
     const outOfArea =
@@ -54,7 +55,11 @@ const Dropdown: FC<DropdownProps> = ({ element, children }) => {
   };
 
   const onToggle = (e: React.MouseEvent<Element, MouseEvent>) => {
-    if (!someComponentIsActive && dropdownContentContainerDiv.current && elementContainerDiv.current) {
+    if (
+      !someComponentIsActive &&
+      dropdownContentContainerDiv.current &&
+      elementContainerDiv.current
+    ) {
       e.stopPropagation();
       dropdownContentContainerDiv.current.style.display = "block";
       setPosition(dropdownContentContainerDiv.current, elementContainerDiv.current);
@@ -86,4 +91,4 @@ const Dropdown: FC<DropdownProps> = ({ element, children }) => {
   );
 };
 
-export default observer(Dropdown);
+export default Dropdown;

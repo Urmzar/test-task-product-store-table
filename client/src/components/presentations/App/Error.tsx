@@ -1,19 +1,14 @@
 import { Button, Result } from "antd";
 import { FC } from "react";
 
-interface ErrorDisplayProps {
+interface Props {
   error: string;
   reloadButtonName: string;
   continueButtonName: string;
   continueButtonOnClick: () => void;
 }
 
-const ErrorDisplay: FC<ErrorDisplayProps> = ({
-  error,
-  reloadButtonName,
-  continueButtonName,
-  continueButtonOnClick,
-}) => (
+const Error: FC<Props> = ({ error, reloadButtonName, continueButtonName, continueButtonOnClick }) => (
   <Result
     status="error"
     title="An error has occured"
@@ -28,4 +23,4 @@ const ErrorDisplay: FC<ErrorDisplayProps> = ({
     ]}></Result>
 );
 
-export default ErrorDisplay;
+export default Error;

@@ -12,7 +12,7 @@ const SortStore = types
   .model("SortStore", {
     key: types.optional(types.enumeration<SortKey>(Object.values(SortKey)), SortKey.PRICE),
     order: types.optional(types.number, 0),
-    prevKey: types.optional(types.enumeration<SortKey>(Object.values(SortKey)), SortKey.DATE_RECEIPT),
+    prevKey: types.optional(types.enumeration<SortKey>(Object.values(SortKey)), SortKey.PRICE),
   })
   .actions(self => ({
     toggleSort(key: SortKey) {
@@ -32,7 +32,8 @@ const SortStore = types
   .views(self => ({
     getSort(productA: KProduct, productB: KProduct) {
       if (self.order === 0) return 0;
-      else if (self.order === 1) return Number(productA[self.key].valueOf()) - Number(productB[self.key].valueOf());
+      else if (self.order === 1)
+        return Number(productA[self.key].valueOf()) - Number(productB[self.key].valueOf());
       else return Number(productB[self.key].valueOf()) - Number(productA[self.key].valueOf());
     },
   }));

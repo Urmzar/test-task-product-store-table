@@ -1,62 +1,46 @@
 import { Button, DatePicker, Form, Input, InputNumber, Select } from "antd";
-import { observer } from "mobx-react-lite";
-import moment, { Moment } from "moment";
-import useStore from "../stores/useStore";
-import { Colors, Sizes, Types } from "../models";
-import "./ProductForm.less";
+import { Moment } from "moment";
+import { FC } from "react";
+import Styles from "../../../styles";
+import { FormValues } from "../../containers/Toolbar/ProductFormContainer";
+import "./.less/ProductForm.less";
 
 const { Option } = Select;
 
-const { productStore, filterStore } = useStore();
-
-interface FormValues {
-  type: Types;
-  color: Colors;
-  size: Sizes;
-  inStock: number;
-  price: number;
-  date: Moment;
-  name: string;
+interface Props {
+  initialValues: FormValues;
+  onFinish: (values: FormValues) => void;
+  types: Array<string>;
+  colors: Array<string>;
+  sizes: Array<string>;
+  disabledDate: (current: Moment) => boolean;
 }
 
-const initialValues: FormValues = {
-  name: "",
-  type: Types.Outerwear,
-  color: Colors.ORANGE,
-  size: Sizes.L,
-  inStock: 10,
-  price: 10,
-  date: moment(),
-};
-
-const ProductForm = () => {
-  const onFinish = (values: FormValues) => {
-    productStore.addProduct({
-      color: values.color,
-      dateReceipt: new Date(values.date.valueOf()),
-      id: 0,
-      inStock: values.inStock,
-      price: values.price,
-      size: values.size,
-      type: values.type,
-      name: values.name,
-    });
-  };
-
+const ProductForm: FC<Props> = ({
+  initialValues,
+  types,
+  colors,
+  sizes,
+  onFinish,
+  disabledDate,
+}) => {
   return (
     <Form
-      className="product-form-container"
+      className={Styles.PRODUCT_FORM_CONTAINER}
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
       initialValues={initialValues}
       onFinish={onFinish}>
-      <Form.Item label="Product name" name="name" rules={[{ required: true, message: "Please input product name!" }]}>
+      <Form.Item
+        label="Product name"
+        name="name"
+        rules={[{ required: true, message: "Please input product name!" }]}>
         <Input />
       </Form.Item>
 
       <Form.Item label="Type" name="type">
         <Select>
-          {Object.values(Types).map(type => (
+          {types.map(type => (
             <Option key={type} value={type}>
               {type}
             </Option>
@@ -66,7 +50,7 @@ const ProductForm = () => {
 
       <Form.Item label="Color" name="color">
         <Select>
-          {Object.values(Colors).map(color => (
+          {colors.map(color => (
             <Option key={color} value={color}>
               <div style={{ backgroundColor: `${color}` }}>&nbsp;</div>
             </Option>
@@ -76,7 +60,7 @@ const ProductForm = () => {
 
       <Form.Item label="Size" name="size">
         <Select>
-          {Object.values(Sizes).map(size => (
+          {sizes.map(size => (
             <Option key={size} value={size}>
               {size}
             </Option>
@@ -91,7 +75,10 @@ const ProductForm = () => {
         <InputNumber min={0} />
       </Form.Item>
 
-      <Form.Item label="Price" name="price" rules={[{ required: true, message: "Please input product price!" }]}>
+      <Form.Item
+        label="Price"
+        name="price"
+        rules={[{ required: true, message: "Please input product price!" }]}>
         <InputNumber min={0} />
       </Form.Item>
 
@@ -99,7 +86,7 @@ const ProductForm = () => {
         label="Date receipt"
         name="date"
         rules={[{ required: true, message: "Please input product date receipt!" }]}>
-        <DatePicker disabledDate={(current: Moment) => current < moment(filterStore.dateMin)} />
+        <DatePicker disabledDate={disabledDate} />
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
@@ -114,4 +101,4 @@ const ProductForm = () => {
   );
 };
 
-export default observer(ProductForm);
+export default ProductForm;

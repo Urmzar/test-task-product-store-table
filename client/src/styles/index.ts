@@ -9,6 +9,17 @@ enum Styles {
   ROW_CONTAINER = "ReactVirtualized__Table__row",
   ROW_CONTAINER_ACTIVE = "ReactVirtualized__Table__row active",
   COLOR_CELL_CONTAINER = "color-cell-container",
+  PRODUCT_FORM_CONTAINER = "product-form-container",
+  SEARCH_FILTER_CONTAINER = "search-filter-container",
+  FILTER_BUTTON_CONTAINER = "filter-button-container",
+  FILTER_BUTTON = "filter-button",
+  CHECK_BOX_FILTER_CONTAINER = "checkbox-filter-container",
+  COLOR_FILTER_CONTAINER = "color-filter-container",
+  SLIDER_FILTER_CONTAINER = "slider-filter-container",
+  FILTER_INPUT = "filter-input",
+  SORT_ICON_CONTAINER = "sort-icon-container",
+  DATE_FILTER_CONTAINER = "date-filter-container",
+  DATATABLE_CONTAINER = "datatable-container",
 }
 
 export default Styles;
