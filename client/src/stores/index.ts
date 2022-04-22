@@ -1,4 +1,4 @@
-import { types } from "mobx-state-tree";
+import { Instance, types } from "mobx-state-tree";
 import FilterStore from "./filterStore";
 import ErrorStore from "./errorStore";
 import ProductStore from "./productStore";
@@ -7,7 +7,7 @@ import RangeStore from "./rangeStore";
 import FlagStore from "./flagStore";
 import DatatableStore from "./datatableStore";
 
-export const RootStore = types.model("RootStore", {
+const RootStore = types.model("RootStore", {
   productStore: types.optional(ProductStore, {}),
   errorStore: types.optional(ErrorStore, {}),
   filterStore: types.optional(FilterStore, {}),
@@ -16,3 +16,12 @@ export const RootStore = types.model("RootStore", {
   flagStore: types.optional(FlagStore, {}),
   datatableStore: types.optional(DatatableStore, {}),
 });
+
+let _rootStore: Instance<typeof RootStore>;
+
+const useStore = () => {
+  if (!_rootStore) _rootStore = RootStore.create();
+  return _rootStore;
+};
+
+export default useStore;

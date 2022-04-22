@@ -1,9 +1,9 @@
 import { types, flow, cast, Instance } from "mobx-state-tree";
+import useStore from "..";
 import makeRequest from "../../api";
 import { Endpoints, RequestResult } from "../../api/utils";
 import { TProduct } from "../../models";
 import { ProductModel, Product } from "./productModel";
-import useStore from "../useStore";
 
 const ProductStore = types
   .model("ProductStore", {

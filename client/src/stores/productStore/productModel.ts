@@ -1,11 +1,13 @@
 import { flow } from "mobx-state-tree";
 import { Instance, types } from "mobx-state-tree";
+import useStore from "..";
 import makeRequest from "../../api";
 import { RequestResult, Endpoints } from "../../api/utils";
-import useStore from "../useStore";
 
 export type Product = Omit<Instance<typeof ProductModel>, "update">;
-export type KProduct = { [key: string]: string | number | Date | ((name: string, price: number) => Promise<void>) };
+export type KProduct = {
+  [key: string]: string | number | Date | ((name: string, price: number) => Promise<void>);
+};
 
 export const ProductModel = types
   .model("ProductModel", {

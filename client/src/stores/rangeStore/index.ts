@@ -1,6 +1,6 @@
 import { types } from "mobx-state-tree";
 import moment from "moment";
-import useStore from "../useStore";
+import useStore from "..";
 import RangeModel, { DateRange, Range, RangeKey } from "./RangeModel";
 
 const RangeStore = types
