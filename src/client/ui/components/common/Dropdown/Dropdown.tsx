@@ -1,6 +1,6 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Row } from "antd";
-import React, { FC, useCallback, useRef } from "react";
+import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { createDropdownContentContextDiv, setPosition } from "./utils";
 import Styles from "../../../styles";
@@ -15,8 +15,25 @@ interface Props {
 }
 
 const Dropdown: FC<Props> = ({ element, children }) => {
+  const [isCurrentActive, setIsCurrentActive] = useState(false);
+
   const elementContainerDiv = useRef<HTMLDivElement>(null);
   const dropdownContentContainerDiv = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isCurrentActive && dropdownContentContainerDiv.current && elementContainerDiv.current) {
+      dropdownContentContainerDiv.current.style.display = "block";
+      setPosition(dropdownContentContainerDiv.current, elementContainerDiv.current);
+      window.addEventListener("resize", resize);
+      document.addEventListener("click", onMouseClose);
+      isActive = true;
+    } else if (dropdownContentContainerDiv.current) {
+      dropdownContentContainerDiv.current.style.display = "none";
+      isActive = false;
+      window.removeEventListener("resize", resize);
+      document.removeEventListener("click", onMouseClose);
+    }
+  }, [isCurrentActive]);
 
   const resize = () => {
     if (dropdownContentContainerDiv.current && elementContainerDiv.current)
@@ -38,26 +55,17 @@ const Dropdown: FC<Props> = ({ element, children }) => {
         e.x > boundingContentrect.right ||
         e.y > boundingContentrect.bottom);
     if (outOfArea && !antPickerWrapperContainTarget && dropdownContentContainerDiv.current)
-      onIconClose();
+      setIsCurrentActive(false);
   };
 
   const onIconClose = useCallback(() => {
-    if (dropdownContentContainerDiv.current) {
-      dropdownContentContainerDiv.current.style.display = "none";
-      isActive = false;
-      window.removeEventListener("resize", resize);
-      document.removeEventListener("click", onMouseClose);
-    }
+    setIsCurrentActive(false);
   }, []);
 
   const toggle = useCallback((e: React.MouseEvent<Element, MouseEvent>) => {
-    if (!isActive && dropdownContentContainerDiv.current && elementContainerDiv.current) {
+    if (!isActive) {
       e.stopPropagation();
-      dropdownContentContainerDiv.current.style.display = "block";
-      setPosition(dropdownContentContainerDiv.current, elementContainerDiv.current);
-      window.addEventListener("resize", resize);
-      document.addEventListener("click", onMouseClose);
-      isActive = true;
+      setIsCurrentActive(true);
     }
   }, []);
 
