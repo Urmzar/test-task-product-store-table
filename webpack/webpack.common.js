@@ -17,7 +17,12 @@ module.exports = {
         test: /\.(css|less)$/,
         use: [ 'style-loader', 'css-loader', 'less-loader' ]
       }
-    ]
+    ],
+    parser: {
+      javascript: {
+        exportsPresence: false,
+      },
+    },
   },
   output: {
     path: path.resolve(__dirname, '..', './dist/client'),
